@@ -1,0 +1,71 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 20px;
+    background-color: #333;
+    border-bottom: 2px solid #888;
+  }
+  
+  .header h1 {
+    font-size: 24px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    margin: 0;
+  }
+  
+  .header h1::before {
+    content: "⚫"; /* Icon or placeholder for logo */
+    font-size: 24px;
+    margin-right: 8px;
+  }
+  
+  /* Centering the search bar */
+  .header-center {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .header-search {
+    display: flex;
+    align-items: center;
+    background-color: #444;
+    border-radius: 20px;
+    padding: 5px 15px;
+    width: 400px; /* Increase width as needed */
+  }
+  
+  .header-search input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    outline: none;
+    width: 100%;
+    padding: 5px;
+  }
+  
+  /* Styling the buttons with increased width */
+  .header-buttons {
+    display: flex;
+    gap: 10px;
+    margin-left: 20px; /* Space between search bar and buttons */
+  }
+  
+  .header-buttons button {
+    padding: 10px 20px; /* Increase button padding */
+    border: none;
+    border-radius: 20px;
+    background-color: #555;
+    color: #fff;
+    cursor: pointer;
+    width: 100px; /* Set a fixed width for larger buttons */
+    transition: background-color 0.3s;
+  }
+  
+  .header-buttons button:hover {
+    background-color: #666;
+  }
+  
