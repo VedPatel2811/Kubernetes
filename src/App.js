@@ -1,20 +1,22 @@
 import "./styles.css";
 import Header from "./View/Header/Header";
-import Menubar from "./View/Menu/Menu";
 import Content from "./View/Content/Content";
 import Description from "./View/Description/Description";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
 const App = () => {
   return (
-    <div className="marketplace-container">
-      <Header />
-      <div className="main-layout">
-        <Menubar />
+    <Router>
+      <div className="marketplace-container">
+        <Header />
         <div className="content">
-          <Description/>
-          {/* <Content /> */}
+          <Routes>
+            <Route path="/" element={<Content />} />
+            <Route path="/description/:id" element={<Description />} />
+          </Routes>
         </div>
       </div>
-    </div>
+    </Router>
   );
 };
 
