@@ -3,11 +3,11 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 15px;
+  overflow-y: auto;
 }
 
 /* Styling for each solution card */
 .solution-card {
-  width: 550px; /* Adjust width as needed */
   height: 120px;
   background-color: #444;
   padding: 15px;

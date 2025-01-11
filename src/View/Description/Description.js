@@ -32,7 +32,7 @@ const Description = () => {
                         <li>Easy to use and well-documented</li>
                         <li>Lightweight with high performance</li>
                         <li>Supports multiple frameworks and platforms</li>
-                        <li>Modular and extensible</li>
+                        <li>Modular and extensible</li>        
                     </ul>
                 </section>
 
