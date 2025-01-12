@@ -5,7 +5,6 @@ import "./Content.css";
 import { useNavigate } from "react-router-dom";
 import Menubar from "../Menu/Menu";
 
-
 const Solutionlist = () => {
   const [solutions, setSolutions] = useState([]);
   const navigate = useNavigate();

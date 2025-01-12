@@ -1,24 +1,23 @@
 .sidebar {
-    width: 12%;
-    padding: 15px;
-    background-color: #333;
-    border-right: 2px solid #888;
-    height: 100vh;
-  }
-  
-  .sidebar button {
-    width: 100%;
-    margin: 5px 0;
-    padding: 25px;
-    background-color: #555;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .sidebar button:hover {
-    background-color: #666;
-  }
-  
+  width: 12%;
+  padding: 15px;
+  background-color: #333;
+  border-right: 2px solid #888;
+  height: 100vh;
+}
+
+.sidebar button {
+  width: 100%;
+  margin: 5px 0;
+  padding: 25px;
+  background-color: #555;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.sidebar button:hover {
+  background-color: #666;
+}

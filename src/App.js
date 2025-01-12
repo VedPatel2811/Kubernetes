@@ -7,14 +7,12 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 const App = () => {
   return (
     <Router>
+      <Header />
 
-        <Header />
-
-          <Routes>
-            <Route path="/" element={<Content />} />
-            <Route path="/description/:id" element={<Description />} />
-          </Routes>
-
+      <Routes>
+        <Route path="/" element={<Content />} />
+        <Route path="/description/:id" element={<Description />} />
+      </Routes>
     </Router>
   );
 };
