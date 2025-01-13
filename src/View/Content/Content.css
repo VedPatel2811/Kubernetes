@@ -1,8 +1,9 @@
 /* Grid layout for SolutionList items */
 .content {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
+  grid-template-columns: 49.5% 49.5%;
+  gap: 1%;
+  height: auto;
   overflow-y: auto;
 }
 
@@ -15,6 +16,7 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   text-align: center;
   transition: transform 0.3s, box-shadow 0.3s;
+
 }
 
 .solution-card:hover {

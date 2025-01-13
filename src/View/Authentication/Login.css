@@ -37,7 +37,7 @@
   }
   
   .form-group input {
-    width: 100%;
+    width: 94%;
     padding: 8px;
     border: 1px solid #555;
     border-radius: 5px;
@@ -49,6 +49,7 @@
   .form-buttons {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 5%;
   }
   
   /* Styling the buttons */
