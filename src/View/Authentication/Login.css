@@ -1,0 +1,82 @@
+/* Overall popup container */
+.login-popup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+  
+  /* Popup form styling */
+  .login-popup-form {
+    background: #333;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .login-popup-form h2 {
+    color: #fff;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    color: #ccc;
+    font-size: 14px;
+  }
+  
+  .form-group input {
+    width: 94%;
+    padding: 8px;
+    border: 1px solid #555;
+    border-radius: 5px;
+    background: #444;
+    color: #fff;
+  }
+  
+  /* Buttons container */
+  .form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5%;
+  }
+  
+  /* Styling the buttons */
+  .login-button,
+  .cancel-button {
+    width: 45%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  .login-button {
+    background-color: #007bff;
+  }
+  
+  .cancel-button {
+    background-color: #ff4c4c;
+  }
+  
+  .login-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .cancel-button:hover {
+    background-color: #d11a1a;
+  }
+  

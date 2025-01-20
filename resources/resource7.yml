@@ -1,0 +1,17 @@
+apiVersion: example.com/v1
+kind: Processor
+metadata:
+  name: json-processor
+spec:
+  name: "JSON Processor"
+  serviceName: "json-processor-service"
+  ownerName: "Frank"
+  ownerEmail: "frank@example.com"
+  runtime: "python3.10"
+  tags:
+    - "json"
+    - "api"
+    - "processing"
+  description: "Processes JSON files to validate and transform API payloads."
+  actsOn: "application/json"
+  repoURL: "https://github.com/frank/json-processor"

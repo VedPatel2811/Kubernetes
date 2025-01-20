@@ -1,0 +1,17 @@
+apiVersion: example.com/v1
+kind: Processor
+metadata:
+  name: csv-processor
+spec:
+  name: "CSV Processor"
+  serviceName: "csv-processor-service"
+  ownerName: "Eve"
+  ownerEmail: "eve@example.com"
+  runtime: "python3.10"
+  tags:
+    - "csv"
+    - "data"
+    - "processing"
+  description: "Processes CSV files for data cleaning and transformation."
+  actsOn: "text/csv"
+  repoURL: "https://github.com/eve/csv-processor"

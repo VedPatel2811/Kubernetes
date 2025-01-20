@@ -1,0 +1,17 @@
+apiVersion: example.com/v1
+kind: Processor
+metadata:
+  name: audio-processor
+spec:
+  name: "Audio Processor"
+  serviceName: "audio-processor-service"
+  ownerName: "Charlie"
+  ownerEmail: "charlie@example.com"
+  runtime: "java21"
+  tags:
+    - "audio"
+    - "mp3"
+    - "processing"
+  description: "Processes audio files to enhance sound quality and extract features."
+  actsOn: "audio/mpeg"
+  repoURL: "https://github.com/charlie/audio-processor"
