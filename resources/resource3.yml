@@ -1,0 +1,17 @@
+apiVersion: example.com/v1
+kind: Processor
+metadata:
+  name: video-processor
+spec:
+  name: "Video Processor"
+  serviceName: "video-processor-service"
+  ownerName: "Bob"
+  ownerEmail: "bob@example.com"
+  runtime: "python3.10"
+  tags:
+    - "video"
+    - "processing"
+    - "mp4"
+  description: "Processes video files for transcoding and metadata extraction."
+  actsOn: "video/mp4"
+  repoURL: "https://github.com/bob/video-processor"

@@ -1,0 +1,17 @@
+apiVersion: example.com/v1
+kind: Processor
+metadata:
+  name: excel-processor
+spec:
+  name: "Excel Processor"
+  serviceName: "excel-processor-service"
+  ownerName: "Hank"
+  ownerEmail: "hank@example.com"
+  runtime: "python3.10"
+  tags:
+    - "excel"
+    - "xls"
+    - "processing"
+  description: "Processes Excel files to extract and manipulate data."
+  actsOn: "application/vnd.ms-excel"
+  repoURL: "https://github.com/hank/excel-processor"

@@ -1,0 +1,66 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: processors.example.com # Plural name of the resource in the API group
+spec:
+  group: example.com           # API group
+  names:
+    plural: processors         # Plural name for the resource
+    singular: processor        # Singular name for the resource
+    kind: Processor            # Kind name (CamelCase)
+    shortNames:                # Optional short name aliases
+      - proc
+  scope: Namespaced            # Can be Namespaced or Cluster
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:       # Schema validation for the custom resource
+          type: object
+          properties:
+            spec:
+              type: object
+              required: ["name", "serviceName", "ownerName", "ownerEmail", "runtime"]
+              properties:
+                name:
+                  type: string
+                  description: "The display name of the processor"
+                serviceName:
+                  type: string
+                  description: "Unique name used as the ID"
+                ownerName:
+                  type: string
+                  description: "Name of the owner"
+                ownerEmail:
+                  type: string
+                  description: "Email of the owner"
+                runtime:
+                  type: string
+                  enum: ["python3.10", "java21"] # Enforce specific runtime values
+                  description: "Runtime environment (e.g., python3.10, java21)"
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  description: "Tags associated with the processor"
+                description:
+                  type: string
+                  description: "Description of the processor"
+                actsOn:
+                  type: string
+                  description: "File type the processor works on"
+                repoURL:
+                  type: string
+                  nullable: true
+                  description: "Optional repository URL"
+      additionalPrinterColumns: # Additional columns for `kubectl get`
+        - name: Service Name
+          type: string
+          jsonPath: .spec.serviceName
+        - name: Owner Name
+          type: string
+          jsonPath: .spec.ownerName
+        - name: Runtime
+          type: string
+          jsonPath: .spec.runtime

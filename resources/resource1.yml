@@ -1,0 +1,16 @@
+apiVersion: example.com/v1       # API group and version from the CRD
+kind: Processor                  # Kind from the CRD
+metadata:
+  name: text-processor           # Name of the custom resource
+spec:
+  name: "Text Processor"
+  serviceName: "text-processor-service"
+  ownerName: "Alice"
+  ownerEmail: "alice@example.com"
+  runtime: "python3.10"
+  tags:
+    - "text"
+    - "processing"
+  description: "Processes textual data"
+  actsOn: "text/plain"
+  repoURL: "https://github.com/alice/text-processor"

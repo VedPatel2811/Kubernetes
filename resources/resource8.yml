@@ -1,0 +1,17 @@
+apiVersion: example.com/v1
+kind: Processor
+metadata:
+  name: xml-processor
+spec:
+  name: "XML Processor"
+  serviceName: "xml-processor-service"
+  ownerName: "Grace"
+  ownerEmail: "grace@example.com"
+  runtime: "java21"
+  tags:
+    - "xml"
+    - "parsing"
+    - "processing"
+  description: "Processes XML files for data extraction and transformation."
+  actsOn: "application/xml"
+  repoURL: "https://github.com/grace/xml-processor"
