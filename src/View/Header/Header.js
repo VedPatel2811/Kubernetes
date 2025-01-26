@@ -1,6 +1,5 @@
 import React from "react";
 import "./Header.css";
-import { login, logout, isAuthenticated } from "../Authentication/authService"; // Adjust the path if needed
 
 const Header = () => {
   return (
@@ -14,11 +13,6 @@ const Header = () => {
         <button>Models</button>
         <button>Datasets</button>
         <button>Objects</button>
-        {isAuthenticated() ? (
-          <button onClick={logout}>Logout</button>
-        ) : (
-          <button onClick={login}>Login</button>
-        )}
       </div>
     </header>
   );
