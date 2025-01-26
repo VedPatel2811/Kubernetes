@@ -1,10 +1,8 @@
 import React from "react";
 import "./Header.css";
-import { useAuth0 } from "@auth0/auth0-react"; // Import Auth0 hook
+import { login, logout, isAuthenticated } from "../Authentication/authService"; // Adjust the path if needed
 
 const Header = () => {
-  const { loginWithRedirect, logout, isAuthenticated } = useAuth0(); // Destructure Auth0 functions
-
   return (
     <header className="header">
       <h1>Marketplace</h1>
@@ -16,18 +14,10 @@ const Header = () => {
         <button>Models</button>
         <button>Datasets</button>
         <button>Objects</button>
-        {isAuthenticated ? (
-          <button
-            onClick={() =>
-              logout({
-                logoutParams: { returnTo: window.location.origin },
-              })
-            }
-          >
-            Logout
-          </button>
+        {isAuthenticated() ? (
+          <button onClick={logout}>Logout</button>
         ) : (
-          <button onClick={() => loginWithRedirect()}>Login</button>
+          <button onClick={login}>Login</button>
         )}
       </div>
     </header>
