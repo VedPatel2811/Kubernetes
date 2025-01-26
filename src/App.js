@@ -1,16 +1,16 @@
 import React, { useEffect } from "react";
-import { login, logout, isAuthenticated ,handleCallback } from "./View/Authentication/authService"; // Import the token handling function
-import Header from "./View/Header/Header"; // Path to your Header component
-import Content from "./View/Content/Content"; // Existing content
-import Description from "./View/Description/Description"; // Existing content
+import { login, isAuthenticated ,handleCallback } from "./View/Authentication/authService";
+import Header from "./View/Header/Header"; 
+import Content from "./View/Content/Content"; 
+import Description from "./View/Description/Description"; 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 const App = () => {
   useEffect(() => {
-    handleCallback(); // Process tokens if redirected from Auth0
+    handleCallback(); 
 
     if (!isAuthenticated()) {
-      login(); // Trigger login if not authenticated
+      login();
     }
   }, []);
 

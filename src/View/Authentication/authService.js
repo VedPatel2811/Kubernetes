@@ -45,12 +45,6 @@ export const getAccessToken = () => sessionStorage.getItem("access_token");
 // Get the ID token from sessionStorage
 export const getIdToken = () => sessionStorage.getItem("id_token");
 
-// Log the user out and clear tokens
-export const logout = () => {
-  sessionStorage.clear(); // Clear tokens from sessionStorage
-  const logoutUrl = `https://${AUTH0_DOMAIN}/v2/logout?client_id=${CLIENT_ID}&returnTo=${REDIRECT_URI}`;
-  window.location.href = logoutUrl;
-};
 
 // Check if the user is authenticated (based on token presence)
 export const isAuthenticated = () => !!getAccessToken();
