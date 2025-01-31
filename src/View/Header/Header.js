@@ -10,9 +10,7 @@ const Header = () => {
         <input type="text" placeholder="Search" />
       </div>
       <div className="header-buttons">
-        <button>Models</button>
-        <button>Datasets</button>
-        <button>Objects</button>
+        <button>Processes</button>
       </div>
     </header>
   );
