@@ -1,6 +1,6 @@
 const AUTH0_DOMAIN = "dev-qapjd3lozedt2jn1.us.auth0.com"; // Replace with your Auth0 domain
 const CLIENT_ID = "70ibFtYBbilQV1iWhfI9zaF9Qc3rfgqu"; // Replace with your Auth0 client ID
-const REDIRECT_URI = "http://localhost:3999"; // Replace with your callback URL
+const REDIRECT_URI = "https://kubernetes-black.vercel.app/"; // Replace with your callback URL
 
 // Redirect the user to Auth0 login page
 export const login = () => {
