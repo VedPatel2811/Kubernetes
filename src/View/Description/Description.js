@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import "./Description.css";
 import { useParams } from "react-router-dom";
 import { solutions } from "../../Model/Content/ContentModel";

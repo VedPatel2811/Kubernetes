@@ -1,6 +1,6 @@
-const AUTH0_DOMAIN = "dev-qapjd3lozedt2jn1.us.auth0.com"; // Replace with your Auth0 domain
-const CLIENT_ID = "70ibFtYBbilQV1iWhfI9zaF9Qc3rfgqu"; // Replace with your Auth0 client ID
-const REDIRECT_URI = "https://kubernetes-black.vercel.app/"; // Replace with your callback URL
+const AUTH0_DOMAIN = process.env.REACT_APP_AUTH0_DOMAIN;
+const CLIENT_ID = process.env.REACT_APP_AUTH0_CLIENT_ID;
+const REDIRECT_URI = process.env.REACT_APP_AUTH0_REDIRECT_URI;
 
 // Redirect the user to Auth0 login page
 export const login = () => {
@@ -44,7 +44,6 @@ export const getAccessToken = () => sessionStorage.getItem("access_token");
 
 // Get the ID token from sessionStorage
 export const getIdToken = () => sessionStorage.getItem("id_token");
-
 
 // Check if the user is authenticated (based on token presence)
 export const isAuthenticated = () => !!getAccessToken();

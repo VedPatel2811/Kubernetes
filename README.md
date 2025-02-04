@@ -69,11 +69,9 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 
-npm init
-npm i express
-npm i mongoose
-npm i cors
-node .\src\View\Authentication\Authentication.js
+npm i dotenv
+npm install dotenv-webpack
+
 
 ### Open new Terminal
 
