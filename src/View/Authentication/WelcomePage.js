@@ -2,17 +2,17 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./WelcomePage.css";
 
-const WelcomePage = () => {
+const WelcomePage = ({ onClose }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirect to Marketplace after 3 seconds
     const timer = setTimeout(() => {
-      navigate("/Header");
+      onClose();
+      navigate("/");
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [navigate]);
+  }, [navigate, onClose]);
 
   return (
     <div className="welcome-container">

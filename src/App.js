@@ -1,21 +1,35 @@
-import React, { useEffect , useState } from "react";
-import { login, isAuthenticated ,handleCallback } from "./View/Authentication/authService";
-import Header from "./View/Header/Header"; 
-import Content from "./View/Content/Content"; 
-import Description from "./View/Description/Description"; 
-import WelcomePage from "./View/Authentication/WelcomePage"; // Welocme page 
+import React, { useEffect, useState } from "react";
+import {
+  login,
+  isAuthenticated,
+  handleCallback,
+} from "./View/Authentication/authService";
+import Header from "./View/Header/Header";
+import Content from "./View/Content/Content";
+import Description from "./View/Description/Description";
+import WelcomePage from "./View/Authentication/WelcomePage"; // Welcome page
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
-  
+  const [showWelcomePage, setShowWelcomePage] = useState(false);
+
   useEffect(() => {
     handleCallback();
 
     if (!isAuthenticated()) {
       login();
     } else {
-      setIsLoading(false); 
+      // If authenticated, check localStorage for the welcome page flag
+      const isWelcomePageShown = localStorage.getItem("welcomePageShown");
+
+      // If welcome page hasn't been shown, display it and set flag
+      if (!isWelcomePageShown) {
+        setShowWelcomePage(true);
+        localStorage.setItem("welcomePageShown", "true");
+      }
+
+      setIsLoading(false);
     }
   }, []);
 
@@ -23,16 +37,14 @@ const App = () => {
     <Router>
       <Header />
       <div className="main-content">
-        <Routes>
-          {isLoading ? (
-            <Route path="/" element={<WelcomePage />} />
-          ) : (
-            <>
-              <Route path="/" element={<Content />} />
-              <Route path="/description/:id" element={<Description />} />
-            </>
-          )}
-        </Routes>
+      {showWelcomePage ? (
+          <WelcomePage onClose={() => setShowWelcomePage(false)} />
+        ) : (
+          <Routes>
+            <Route path="/" element={<Content />} />
+            <Route path="/description/:id" element={<Description />} />
+          </Routes>
+        )}
       </div>
     </Router>
   );
