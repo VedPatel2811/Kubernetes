@@ -6,7 +6,7 @@ const Processors = () => {
 
   useEffect(() => {
     // Fetch data from the Flask API
-    fetch("http://localhost:5000/api/processors")
+    fetch("http://127.0.0.1:8001/apis/example.com/v1/namespaces/default/processors")
       .then((response) => response.json())
       .then((data) => {
         setProcessors(data.items || []); // Adjust based on the API response

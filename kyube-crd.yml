@@ -1,22 +1,22 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: processors.example.com # Plural name of the resource in the API group
+  name: processors.example.com 
 spec:
-  group: example.com           # API group
+  group: example.com           
   names:
-    plural: processors         # Plural name for the resource
-    singular: processor        # Singular name for the resource
-    kind: Processor            # Kind name (CamelCase)
-    shortNames:                # Optional short name aliases
+    plural: processors         
+    singular: processor        
+    kind: Processor            
+    shortNames:                
       - proc
-  scope: Namespaced            # Can be Namespaced or Cluster
+  scope: Namespaced            
   versions:
     - name: v1
       served: true
       storage: true
       schema:
-        openAPIV3Schema:       # Schema validation for the custom resource
+        openAPIV3Schema:       
           type: object
           properties:
             spec:
@@ -37,7 +37,7 @@ spec:
                   description: "Email of the owner"
                 runtime:
                   type: string
-                  enum: ["python3.10", "java21"] # Enforce specific runtime values
+                  enum: ["python3.10", "java21"] 
                   description: "Runtime environment (e.g., python3.10, java21)"
                 tags:
                   type: array
@@ -54,7 +54,7 @@ spec:
                   type: string
                   nullable: true
                   description: "Optional repository URL"
-      additionalPrinterColumns: # Additional columns for `kubectl get`
+      additionalPrinterColumns: 
         - name: Service Name
           type: string
           jsonPath: .spec.serviceName

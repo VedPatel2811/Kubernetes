@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: processor-backend-service
+spec:
+  selector:
+    app: processor-backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+      nodePort: 32091
+  type: NodePort # Use LoadBalancer if external access is needed
