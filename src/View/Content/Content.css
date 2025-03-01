@@ -10,14 +10,15 @@
 
 /* Styling for each solution card */
 .solution-card {
+  justify-content: center;
   height: 120px;
-  background-color: #444;
+  background-color: #ebebeb;
   padding: 15px;
   border-radius: 10px;
+  border: 1px solid #e3e3e3;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   text-align: center;
   transition: transform 0.3s, box-shadow 0.3s;
-
 }
 
 .solution-card:hover {
@@ -27,17 +28,17 @@
 
 .solution-card h3 {
   margin: 0;
-  font-size: 18px;
-  color: #fff;
+  font-size: 24px;
+  color: #26374a;
+  font-weight: 700;
 }
 
 .solution-card p {
   font-size: 14px;
-  color: #bbb;
+  color: #3a4d66;
 }
 .main-layout {
   display: flex;
   flex: 1;
-  background-color: #222;
-
+  background-color: #ffffff;
 }

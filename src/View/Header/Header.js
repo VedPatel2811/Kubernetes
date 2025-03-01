@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./Header.css";
 
 const Header = () => {
@@ -20,17 +21,17 @@ const Header = () => {
 
   return (
     <header className="header">
-      <h1>Marketplace</h1>
+      <h1>CSE Marketplace</h1>
       <div className="header-search">
-        <span className="search-icon">🔍</span>
+        <button className="glyphicon glyphicon-search search-icon"></button>
         <input type="text" placeholder="Search" />
       </div>
 
       <div className="header-buttons">
         <button>Processes</button>
-        <button>
+        <div className="user-info">
           {userEmail ? userEmail.substring(0, userEmail.indexOf("@")) : "Guest"}
-        </button>
+        </div>
       </div>
     </header>
   );
