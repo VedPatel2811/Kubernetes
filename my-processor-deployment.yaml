@@ -1,0 +1,601 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-processor-deployment
+  labels:
+    app: my-processor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-processor
+  template:
+    metadata:
+      labels:
+        app: my-processor
+    spec:
+      containers:
+
+        # 1) text-processor (runtime: python3.10)
+        - name: text-processor
+          image: docker.io/library/python:3.10-slim
+          env:
+            - name: NAME
+              value: "Text Processor"
+            - name: SERVICENAME
+              value: "text-processor-service"
+            - name: OWNERNAME
+              value: "Alice"
+            - name: OWNEREMAIL
+              value: "alice@example.com"
+            - name: RUNTIME
+              value: "python3.10"
+            - name: TAGS
+              value: "text,processing"
+            - name: DESCRIPTION
+              value: "Processes textual data"
+            - name: ACTSON
+              value: "text/plain"
+            - name: REPOURL
+              value: "https://github.com/alice/text-processor"
+          ports:
+            - containerPort: 8080
+          command: ["python"]
+          args:
+            - -c
+            - |
+              import os
+              import http.server
+              import socketserver
+
+              port = 8080
+              class Handler(http.server.SimpleHTTPRequestHandler):
+                  def do_GET(self):
+                      resp = {
+                          "name": os.getenv("NAME"),
+                          "serviceName": os.getenv("SERVICENAME"),
+                          "ownerName": os.getenv("OWNERNAME"),
+                          "ownerEmail": os.getenv("OWNEREMAIL"),
+                          "runtime": os.getenv("RUNTIME"),
+                          "tags": os.getenv("TAGS"),
+                          "description": os.getenv("DESCRIPTION"),
+                          "actsOn": os.getenv("ACTSON"),
+                          "repoURL": os.getenv("REPOURL"),
+                      }
+                      self.send_response(200)
+                      self.send_header("Content-Type", "application/json")
+                      self.end_headers()
+                      self.wfile.write(str(resp).encode("utf-8"))
+
+              with socketserver.TCPServer(("", port), Handler) as httpd:
+                  print(f"Serving text-processor on port {port}")
+                  httpd.serve_forever()
+
+        # 2) image-processor (runtime: python3.10)
+        - name: image-processor
+          image: docker.io/library/python:3.10-slim
+          env:
+            - name: NAME
+              value: "Image Processor"
+            - name: SERVICENAME
+              value: "image-processor-service"
+            - name: OWNERNAME
+              value: "Alice"
+            - name: OWNEREMAIL
+              value: "alice@example.com"
+            - name: RUNTIME
+              value: "python3.10"
+            - name: TAGS
+              value: "image,processing,jpeg"
+            - name: DESCRIPTION
+              value: "Processes image files to apply transformations or analysis."
+            - name: ACTSON
+              value: "image/jpeg"
+            - name: REPOURL
+              value: "https://github.com/alice/image-processor"
+          ports:
+            - containerPort: 8081
+          command: ["python"]
+          args:
+            - -c
+            - |
+              import os
+              import http.server
+              import socketserver
+
+              port = 8081
+              class Handler(http.server.SimpleHTTPRequestHandler):
+                  def do_GET(self):
+                      resp = {
+                          "name": os.getenv("NAME"),
+                          "serviceName": os.getenv("SERVICENAME"),
+                          "ownerName": os.getenv("OWNERNAME"),
+                          "ownerEmail": os.getenv("OWNEREMAIL"),
+                          "runtime": os.getenv("RUNTIME"),
+                          "tags": os.getenv("TAGS"),
+                          "description": os.getenv("DESCRIPTION"),
+                          "actsOn": os.getenv("ACTSON"),
+                          "repoURL": os.getenv("REPOURL"),
+                      }
+                      self.send_response(200)
+                      self.send_header("Content-Type", "application/json")
+                      self.end_headers()
+                      self.wfile.write(str(resp).encode("utf-8"))
+
+              with socketserver.TCPServer(("", port), Handler) as httpd:
+                  print(f"Serving image-processor on port {port}")
+                  httpd.serve_forever()
+
+        # 3) video-processor (runtime: python3.10)
+        - name: video-processor
+          image: docker.io/library/python:3.10-slim
+          env:
+            - name: NAME
+              value: "Video Processor"
+            - name: SERVICENAME
+              value: "video-processor-service"
+            - name: OWNERNAME
+              value: "Bob"
+            - name: OWNEREMAIL
+              value: "bob@example.com"
+            - name: RUNTIME
+              value: "python3.10"
+            - name: TAGS
+              value: "video,processing,mp4"
+            - name: DESCRIPTION
+              value: "Processes video files for transcoding and metadata extraction."
+            - name: ACTSON
+              value: "video/mp4"
+            - name: REPOURL
+              value: "https://github.com/bob/video-processor"
+          ports:
+            - containerPort: 8082
+          command: ["python"]
+          args:
+            - -c
+            - |
+              import os
+              import http.server
+              import socketserver
+
+              port = 8082
+              class Handler(http.server.SimpleHTTPRequestHandler):
+                  def do_GET(self):
+                      resp = {
+                          "name": os.getenv("NAME"),
+                          "serviceName": os.getenv("SERVICENAME"),
+                          "ownerName": os.getenv("OWNERNAME"),
+                          "ownerEmail": os.getenv("OWNEREMAIL"),
+                          "runtime": os.getenv("RUNTIME"),
+                          "tags": os.getenv("TAGS"),
+                          "description": os.getenv("DESCRIPTION"),
+                          "actsOn": os.getenv("ACTSON"),
+                          "repoURL": os.getenv("REPOURL"),
+                      }
+                      self.send_response(200)
+                      self.send_header("Content-Type", "application/json")
+                      self.end_headers()
+                      self.wfile.write(str(resp).encode("utf-8"))
+
+              with socketserver.TCPServer(("", port), Handler) as httpd:
+                  print(f"Serving video-processor on port {port}")
+                  httpd.serve_forever()
+
+        # 4) audio-processor (runtime: java21)
+        - name: audio-processor
+          image: docker.io/library/openjdk:21-jdk-slim
+          env:
+            - name: NAME
+              value: "Audio Processor"
+            - name: SERVICENAME
+              value: "audio-processor-service"
+            - name: OWNERNAME
+              value: "Charlie"
+            - name: OWNEREMAIL
+              value: "charlie@example.com"
+            - name: RUNTIME
+              value: "java21"
+            - name: TAGS
+              value: "audio,mp3,processing"
+            - name: DESCRIPTION
+              value: "Processes audio files to enhance sound quality and extract features."
+            - name: ACTSON
+              value: "audio/mpeg"
+            - name: REPOURL
+              value: "https://github.com/charlie/audio-processor"
+          ports:
+            - containerPort: 8083
+          command: ["/bin/bash"]
+          args:
+            - -c
+            - |
+              echo "Starting audio-processor on port 8083"
+              cat <<EOF > SimpleHttpServer.java
+              import com.sun.net.httpserver.HttpServer;
+              import com.sun.net.httpserver.HttpHandler;
+              import com.sun.net.httpserver.HttpExchange;
+              import java.io.IOException;
+              import java.io.OutputStream;
+              import java.net.InetSocketAddress;
+
+              public class SimpleHttpServer {
+                  public static void main(String[] args) throws IOException {
+                      int port = 8083;
+                      HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+                      server.createContext("/", new MyHandler());
+                      server.setExecutor(null); 
+                      System.out.println("Serving audio-processor on port " + port);
+                      server.start();
+                  }
+
+                  static class MyHandler implements HttpHandler {
+                      @Override
+                      public void handle(HttpExchange t) throws IOException {
+                          String response = "{"
+                              + "\"name\":\"" + System.getenv("NAME") + "\","
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
+                              + "}";
+                          t.sendResponseHeaders(200, response.length());
+                          OutputStream os = t.getResponseBody();
+                          os.write(response.getBytes());
+                          os.close();
+                      }
+                  }
+              }
+              EOF
+              javac SimpleHttpServer.java
+              java SimpleHttpServer
+
+        # 5) pdf-processor (runtime: python3.10)
+        - name: pdf-processor
+          image: docker.io/library/python:3.10-slim
+          env:
+            - name: NAME
+              value: "PDF Processor"
+            - name: SERVICENAME
+              value: "pdf-processor-service"
+            - name: OWNERNAME
+              value: "Diana"
+            - name: OWNEREMAIL
+              value: "diana@example.com"
+            - name: RUNTIME
+              value: "python3.10"
+            - name: TAGS
+              value: "pdf,processing,text"
+            - name: DESCRIPTION
+              value: "Processes PDF files to extract text and metadata."
+            - name: ACTSON
+              value: "application/pdf"
+            - name: REPOURL
+              value: "https://github.com/diana/pdf-processor"
+          ports:
+            - containerPort: 8084
+          command: ["python"]
+          args:
+            - -c
+            - |
+              import os
+              import http.server
+              import socketserver
+
+              port = 8084
+              class Handler(http.server.SimpleHTTPRequestHandler):
+                  def do_GET(self):
+                      resp = {
+                          "name": os.getenv("NAME"),
+                          "serviceName": os.getenv("SERVICENAME"),
+                          "ownerName": os.getenv("OWNERNAME"),
+                          "ownerEmail": os.getenv("OWNEREMAIL"),
+                          "runtime": os.getenv("RUNTIME"),
+                          "tags": os.getenv("TAGS"),
+                          "description": os.getenv("DESCRIPTION"),
+                          "actsOn": os.getenv("ACTSON"),
+                          "repoURL": os.getenv("REPOURL"),
+                      }
+                      self.send_response(200)
+                      self.send_header("Content-Type", "application/json")
+                      self.end_headers()
+                      self.wfile.write(str(resp).encode("utf-8"))
+
+              with socketserver.TCPServer(("", port), Handler) as httpd:
+                  print(f"Serving pdf-processor on port {port}")
+                  httpd.serve_forever()
+
+        # 6) csv-processor (runtime: python3.10)
+        - name: csv-processor
+          image: docker.io/library/python:3.10-slim
+          env:
+            - name: NAME
+              value: "CSV Processor"
+            - name: SERVICENAME
+              value: "csv-processor-service"
+            - name: OWNERNAME
+              value: "Eve"
+            - name: OWNEREMAIL
+              value: "eve@example.com"
+            - name: RUNTIME
+              value: "python3.10"
+            - name: TAGS
+              value: "csv,data,processing"
+            - name: DESCRIPTION
+              value: "Processes CSV files for data cleaning and transformation."
+            - name: ACTSON
+              value: "text/csv"
+            - name: REPOURL
+              value: "https://github.com/eve/csv-processor"
+          ports:
+            - containerPort: 8085
+          command: ["python"]
+          args:
+            - -c
+            - |
+              import os
+              import http.server
+              import socketserver
+
+              port = 8085
+              class Handler(http.server.SimpleHTTPRequestHandler):
+                  def do_GET(self):
+                      resp = {
+                          "name": os.getenv("NAME"),
+                          "serviceName": os.getenv("SERVICENAME"),
+                          "ownerName": os.getenv("OWNERNAME"),
+                          "ownerEmail": os.getenv("OWNEREMAIL"),
+                          "runtime": os.getenv("RUNTIME"),
+                          "tags": os.getenv("TAGS"),
+                          "description": os.getenv("DESCRIPTION"),
+                          "actsOn": os.getenv("ACTSON"),
+                          "repoURL": os.getenv("REPOURL"),
+                      }
+                      self.send_response(200)
+                      self.send_header("Content-Type", "application/json")
+                      self.end_headers()
+                      self.wfile.write(str(resp).encode("utf-8"))
+
+              with socketserver.TCPServer(("", port), Handler) as httpd:
+                  print(f"Serving csv-processor on port {port}")
+                  httpd.serve_forever()
+
+        # 7) json-processor (runtime: python3.10)
+        - name: json-processor
+          image: docker.io/library/python:3.10-slim
+          env:
+            - name: NAME
+              value: "JSON Processor"
+            - name: SERVICENAME
+              value: "json-processor-service"
+            - name: OWNERNAME
+              value: "Frank"
+            - name: OWNEREMAIL
+              value: "frank@example.com"
+            - name: RUNTIME
+              value: "python3.10"
+            - name: TAGS
+              value: "json,api,processing"
+            - name: DESCRIPTION
+              value: "Processes JSON files to validate and transform API payloads."
+            - name: ACTSON
+              value: "application/json"
+            - name: REPOURL
+              value: "https://github.com/frank/json-processor"
+          ports:
+            - containerPort: 8086
+          command: ["python"]
+          args:
+            - -c
+            - |
+              import os
+              import http.server
+              import socketserver
+
+              port = 8086
+              class Handler(http.server.SimpleHTTPRequestHandler):
+                  def do_GET(self):
+                      resp = {
+                          "name": os.getenv("NAME"),
+                          "serviceName": os.getenv("SERVICENAME"),
+                          "ownerName": os.getenv("OWNERNAME"),
+                          "ownerEmail": os.getenv("OWNEREMAIL"),
+                          "runtime": os.getenv("RUNTIME"),
+                          "tags": os.getenv("TAGS"),
+                          "description": os.getenv("DESCRIPTION"),
+                          "actsOn": os.getenv("ACTSON"),
+                          "repoURL": os.getenv("REPOURL"),
+                      }
+                      self.send_response(200)
+                      self.send_header("Content-Type", "application/json")
+                      self.end_headers()
+                      self.wfile.write(str(resp).encode("utf-8"))
+
+              with socketserver.TCPServer(("", port), Handler) as httpd:
+                  print(f"Serving json-processor on port {port}")
+                  httpd.serve_forever()
+
+        # 8) xml-processor (runtime: java21)
+        - name: xml-processor
+          image: docker.io/library/openjdk:21-jdk-slim
+          env:
+            - name: NAME
+              value: "XML Processor"
+            - name: SERVICENAME
+              value: "xml-processor-service"
+            - name: OWNERNAME
+              value: "Grace"
+            - name: OWNEREMAIL
+              value: "grace@example.com"
+            - name: RUNTIME
+              value: "java21"
+            - name: TAGS
+              value: "xml,parsing,processing"
+            - name: DESCRIPTION
+              value: "Processes XML files for data extraction and transformation."
+            - name: ACTSON
+              value: "application/xml"
+            - name: REPOURL
+              value: "https://github.com/grace/xml-processor"
+          ports:
+            - containerPort: 8087
+          command: ["/bin/bash"]
+          args:
+            - -c
+            - |
+              echo "Starting xml-processor on port 8087"
+              cat <<EOF > SimpleHttpServer.java
+              import com.sun.net.httpserver.HttpServer;
+              import com.sun.net.httpserver.HttpHandler;
+              import com.sun.net.httpserver.HttpExchange;
+              import java.io.IOException;
+              import java.io.OutputStream;
+              import java.net.InetSocketAddress;
+
+              public class SimpleHttpServer {
+                  public static void main(String[] args) throws IOException {
+                      int port = 8087;
+                      HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+                      server.createContext("/", new MyHandler());
+                      server.setExecutor(null); 
+                      System.out.println("Serving xml-processor on port " + port);
+                      server.start();
+                  }
+
+                  static class MyHandler implements HttpHandler {
+                      @Override
+                      public void handle(HttpExchange t) throws IOException {
+                          String response = "{"
+                              + "\"name\":\"" + System.getenv("NAME") + "\","
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
+                              + "}";
+                          t.sendResponseHeaders(200, response.length());
+                          OutputStream os = t.getResponseBody();
+                          os.write(response.getBytes());
+                          os.close();
+                      }
+                  }
+              }
+              EOF
+              javac SimpleHttpServer.java
+              java SimpleHttpServer
+
+        # 9) excel-processor (runtime: python3.10)
+        - name: excel-processor
+          image: docker.io/library/python:3.10-slim
+          env:
+            - name: NAME
+              value: "Excel Processor"
+            - name: SERVICENAME
+              value: "excel-processor-service"
+            - name: OWNERNAME
+              value: "Hank"
+            - name: OWNEREMAIL
+              value: "hank@example.com"
+            - name: RUNTIME
+              value: "python3.10"
+            - name: TAGS
+              value: "excel,xls,processing"
+            - name: DESCRIPTION
+              value: "Processes Excel files to extract and manipulate data."
+            - name: ACTSON
+              value: "application/vnd.ms-excel"
+            - name: REPOURL
+              value: "https://github.com/hank/excel-processor"
+          ports:
+            - containerPort: 8088
+          command: ["python"]
+          args:
+            - -c
+            - |
+              import os
+              import http.server
+              import socketserver
+
+              port = 8088
+              class Handler(http.server.SimpleHTTPRequestHandler):
+                  def do_GET(self):
+                      resp = {
+                          "name": os.getenv("NAME"),
+                          "serviceName": os.getenv("SERVICENAME"),
+                          "ownerName": os.getenv("OWNERNAME"),
+                          "ownerEmail": os.getenv("OWNEREMAIL"),
+                          "runtime": os.getenv("RUNTIME"),
+                          "tags": os.getenv("TAGS"),
+                          "description": os.getenv("DESCRIPTION"),
+                          "actsOn": os.getenv("ACTSON"),
+                          "repoURL": os.getenv("REPOURL"),
+                      }
+                      self.send_response(200)
+                      self.send_header("Content-Type", "application/json")
+                      self.end_headers()
+                      self.wfile.write(str(resp).encode("utf-8"))
+
+              with socketserver.TCPServer(("", port), Handler) as httpd:
+                  print(f"Serving excel-processor on port {port}")
+                  httpd.serve_forever()
+
+        # 10) markdown-processor (runtime: python3.10)
+        - name: markdown-processor
+          image: docker.io/library/python:3.10-slim
+          env:
+            - name: NAME
+              value: "Markdown Processor"
+            - name: SERVICENAME
+              value: "markdown-processor-service"
+            - name: OWNERNAME
+              value: "Ivy"
+            - name: OWNEREMAIL
+              value: "ivy@example.com"
+            - name: RUNTIME
+              value: "python3.10"
+            - name: TAGS
+              value: "markdown,text,processing"
+            - name: DESCRIPTION
+              value: "Processes Markdown files to render and validate content."
+            - name: ACTSON
+              value: "text/markdown"
+            - name: REPOURL
+              value: "https://github.com/ivy/markdown-processor"
+          ports:
+            - containerPort: 8089
+          command: ["python"]
+          args:
+            - -c
+            - |
+              import os
+              import http.server
+              import socketserver
+
+              port = 8089
+              class Handler(http.server.SimpleHTTPRequestHandler):
+                  def do_GET(self):
+                      resp = {
+                          "name": os.getenv("NAME"),
+                          "serviceName": os.getenv("SERVICENAME"),
+                          "ownerName": os.getenv("OWNERNAME"),
+                          "ownerEmail": os.getenv("OWNEREMAIL"),
+                          "runtime": os.getenv("RUNTIME"),
+                          "tags": os.getenv("TAGS"),
+                          "description": os.getenv("DESCRIPTION"),
+                          "actsOn": os.getenv("ACTSON"),
+                          "repoURL": os.getenv("REPOURL"),
+                      }
+                      self.send_response(200)
+                      self.send_header("Content-Type", "application/json")
+                      self.end_headers()
+                      self.wfile.write(str(resp).encode("utf-8"))
+
+              with socketserver.TCPServer(("", port), Handler) as httpd:
+                  print(f"Serving markdown-processor on port {port}")
+                  httpd.serve_forever()

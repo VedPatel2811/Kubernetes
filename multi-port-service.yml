@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-processor-service
+spec:
+  selector:
+    app: my-processor
+  type: NodePort  # or LoadBalancer, if your cluster supports it
+  ports:
+    - name: text-processor
+      port: 8080
+      targetPort: 8080
+      nodePort: 30080  # optional if you want a specific port
+    - name: image-processor
+      port: 8081
+      targetPort: 8081
+      nodePort: 30081
+    - name: video-processor
+      port: 8082
+      targetPort: 8082
+      nodePort: 30082
+    - name: audio-processor
+      port: 8083
+      targetPort: 8083
+      nodePort: 30083
+    - name: pdf-processor
+      port: 8084
+      targetPort: 8084
+      nodePort: 30084
+    - name: csv-processor
+      port: 8085
+      targetPort: 8085
+      nodePort: 30085
+    - name: json-processor
+      port: 8086
+      targetPort: 8086
+      nodePort: 30086
+    - name: xml-processor
+      port: 8087
+      targetPort: 8087
+      nodePort: 30087
+    - name: excel-processor
+      port: 8088
+      targetPort: 8088
+      nodePort: 30088
+    - name: markdown-processor
+      port: 8089
+      targetPort: 8089
+      nodePort: 30089
