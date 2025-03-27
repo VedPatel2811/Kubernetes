@@ -1,17 +1,21 @@
 /* Grid layout for SolutionList items */
 .content {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 49.5% 49.5%;
   gap: 15px;
-  overflow-y: auto;
+  grid-auto-rows: 150px;
+  width: 85%;
+  margin: 20px;
 }
 
 /* Styling for each solution card */
 .solution-card {
+  justify-content: center;
   height: 120px;
-  background-color: #444;
+  background-color: #ebebeb;
   padding: 15px;
   border-radius: 10px;
+  border: 1px solid #e3e3e3;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   text-align: center;
   transition: transform 0.3s, box-shadow 0.3s;
@@ -24,15 +28,17 @@
 
 .solution-card h3 {
   margin: 0;
-  font-size: 18px;
-  color: #fff;
+  font-size: 24px;
+  color: #26374a;
+  font-weight: 700;
 }
 
 .solution-card p {
   font-size: 14px;
-  color: #bbb;
+  color: #3a4d66;
 }
 .main-layout {
   display: flex;
   flex: 1;
+  background-color: #ffffff;
 }

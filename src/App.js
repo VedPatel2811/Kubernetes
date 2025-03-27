@@ -1,39 +1,54 @@
-import "./App.css";
+import React, { useEffect, useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import {
+  login,
+  isAuthenticated,
+  handleCallback,
+} from "./View/Authentication/authService";
 import Header from "./View/Header/Header";
 import Content from "./View/Content/Content";
 import Description from "./View/Description/Description";
-import KubernetesContainers from "./View/KubernetesContainers/KubernetesContainers";
+import WelcomePage from "./View/Authentication/WelcomePage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import { useState } from "react";
-
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // State to track login status
+  const [isLoading, setIsLoading] = useState(true);
+  const [showWelcomePage, setShowWelcomePage] = useState(false);
 
-  // Function to handle login success
-  const handleLogin = () => {
-    setIsAuthenticated(true);
-  };
+  useEffect(() => {
+    handleCallback();
 
-  // Private Route Component
- // const PrivateRoute = ({ children }) => {
- //   return isAuthenticated ? children : <Navigate to="/login" />;
-  //};
+    if (!isAuthenticated()) {
+      login();
+    } else {
+      // If authenticated, check localStorage for the welcome page flag
+      const isWelcomePageShown = localStorage.getItem("welcomePageShown");
+
+      // If welcome page hasn't been shown, display it and set flag
+      if (!isWelcomePageShown) {
+        setShowWelcomePage(true);
+        localStorage.setItem("welcomePageShown", "true");
+      }
+
+      setIsLoading(false);
+    }
+  }, []);
 
   return (
     <Router>
       <Header />
-      <Routes>
-        <Route path="/" element={<KubernetesContainers />} />
-        <Route path="/description/:id" element={<Description />} />
-        <Route path="/KubernetesContainers" element={<KubernetesContainers />} /> 
-        
-      </Routes>
+      <div className="main-content">
+        {showWelcomePage ? (
+          <WelcomePage onClose={() => setShowWelcomePage(false)} />
+        ) : (
+          <Routes>
+            <Route path="/" element={<Content />} />
+            <Route path="/description/:id" element={<Description />} />
+          </Routes>
+        )}
+      </div>
     </Router>
   );
 };
-
-
-
 
 export default App;
