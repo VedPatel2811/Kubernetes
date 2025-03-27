@@ -76,3 +76,6 @@ npm install dotenv-webpack
 ### Open new Terminal
 
 npm start
+
+minikube start
+minikube service my-processor-service --url
