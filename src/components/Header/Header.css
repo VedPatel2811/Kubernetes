@@ -1,0 +1,94 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 20px;
+  background-color: #ffffff;
+  border-bottom: 3px solid #38414d;
+  height: 65px;
+}
+
+.header h1 {
+  font-size: 24px;
+  color: #333333;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-family: sans-serif;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.header h1::before {
+  content: "🍁";
+  font-size: 24px;
+  margin-right: 8px;
+}
+
+.header-search input {
+  background: transparent;
+  color: #5c5c5c;
+  outline: none;
+  border: none;
+  width: 100%;
+  padding: 5px;
+  height: 25px;
+}
+
+.header-search {
+  display: flex;
+  align-items: center;
+  background-color: #ebebeb;
+  width: 400px;
+  border: 2px solid #26374a;
+  border-radius: 20px;
+}
+
+.search-icon-button {
+  display: inline-block;
+  font-weight: 400;
+  vertical-align: middle;
+  background-color: #26374a;
+  color: #ffffff;
+  overflow: visible;
+  border: none;
+  border-radius: 15px 0 0 15px;
+  cursor: pointer;
+}
+.search-icon {
+  filter: invert(1);
+  height: 20px;
+  padding: 7px 10px 5px 10px;
+}
+.header-buttons {
+  display: flex;
+  gap: 10px;
+  margin-left: 20px; /* Space between search bar and buttons */
+}
+
+.header-buttons button {
+  padding: 10px 20px; /* Increase button padding */
+  border: none;
+  border-radius: 10px;
+  background-color: #26374a;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.user-info {
+  font-family: "Noto Sans", sans-serif;
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  color: #284162;
+  min-width: 75px;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.header-buttons button:hover {
+  background-color: #666;
+}

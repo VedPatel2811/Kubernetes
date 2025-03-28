@@ -1,0 +1,22 @@
+.welcome-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    background-color: #181818;
+    color: white;
+    font-size: 24px;
+  }
+  
+  .welcome-container h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+  }
+  
+  .welcome-container p {
+    font-size: 20px;
+    opacity: 0.7;
+  }
+  

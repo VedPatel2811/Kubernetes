@@ -1,0 +1,32 @@
+.menu-container {
+  width: 12%;
+  background-color: #ebebeb;
+  border-right: 1px solid #e3e3e3;
+  padding: 15px;
+  min-width: 120px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu-item {
+  padding: 25px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  background-color: #444444;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.menu-item:hover {
+  background-color: #666;
+}
+
+.menu-item:active {
+  background-color: #dee2e6;
+}

@@ -1,54 +1,60 @@
-import React, { useEffect, useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import {
-  login,
-  isAuthenticated,
-  handleCallback,
-} from "./View/Authentication/authService";
-import Header from "./View/Header/Header";
-import Content from "./View/Content/Content";
-import Description from "./View/Description/Description";
-import WelcomePage from "./View/Authentication/WelcomePage";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
+import WelcomePage from "./components/Welcome/WelcomePage";
+import HomePage from "./pages/Home/HomePage";
+import SolutionPage from "./pages/Solution/SolutionPage";
+import LoadingPage from "./components/Loading/LoadingPage";
+import "./App.css";
 
-const App = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [showWelcomePage, setShowWelcomePage] = useState(false);
+function App() {
+  const { loginWithRedirect, isAuthenticated, user, isLoading } = useAuth0();
+  const [showWelcome, setShowWelcome] = useState(
+    localStorage.getItem("welcomeShown") !== "true"
+  );
 
   useEffect(() => {
-    handleCallback();
-
-    if (!isAuthenticated()) {
-      login();
-    } else {
-      // If authenticated, check localStorage for the welcome page flag
-      const isWelcomePageShown = localStorage.getItem("welcomePageShown");
-
-      // If welcome page hasn't been shown, display it and set flag
-      if (!isWelcomePageShown) {
-        setShowWelcomePage(true);
-        localStorage.setItem("welcomePageShown", "true");
-      }
-
-      setIsLoading(false);
+    // Check if user is authenticated
+    if (!isLoading && !isAuthenticated) {
+      // If not authenticated, trigger login popup
+      loginWithRedirect();
     }
-  }, []);
+  }, [isLoading, isAuthenticated, loginWithRedirect]);
+
+  useEffect(() => {
+    // Store user email in sessionStorage when authenticated
+    if (isAuthenticated && user?.email) {
+      sessionStorage.setItem("user_email", user.email);
+      console.log("✅ User email stored:", user.email);
+    }
+  }, [isAuthenticated, user]);
+
+  const handleWelcomeClose = () => {
+    setShowWelcome(false);
+    localStorage.setItem("welcomeShown", "true");
+  };
+
+  if (isLoading) {
+    return <LoadingPage />;
+  }
 
   return (
     <Router>
-      <Header />
-      <div className="main-content">
-        {showWelcomePage ? (
-          <WelcomePage onClose={() => setShowWelcomePage(false)} />
+      <div className="App">
+        {showWelcome ? (
+          <WelcomePage onClose={handleWelcomeClose} />
         ) : (
           <Routes>
-            <Route path="/" element={<Content />} />
-            <Route path="/description/:id" element={<Description />} />
+            {/* Home page route */}
+            <Route path="/" element={<HomePage />} />
+
+            {/* Solution page route */}
+            <Route path="/solution/:id" element={<SolutionPage />} />
           </Routes>
         )}
       </div>
     </Router>
   );
-};
+}
 
 export default App;
