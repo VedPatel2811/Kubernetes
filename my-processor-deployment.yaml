@@ -15,7 +15,6 @@ spec:
         app: my-processor
     spec:
       containers:
-
         # 1) text-processor (runtime: python3.10)
         - name: text-processor
           image: docker.io/library/python:3.10-slim
@@ -47,28 +46,29 @@ spec:
               import os
               import http.server
               import socketserver
+              import json
 
-              port = 8080
-              class Handler(http.server.SimpleHTTPRequestHandler):
+              class RequestHandler(http.server.SimpleHTTPRequestHandler):
                   def do_GET(self):
-                      resp = {
-                          "name": os.getenv("NAME"),
-                          "serviceName": os.getenv("SERVICENAME"),
-                          "ownerName": os.getenv("OWNERNAME"),
-                          "ownerEmail": os.getenv("OWNEREMAIL"),
-                          "runtime": os.getenv("RUNTIME"),
-                          "tags": os.getenv("TAGS"),
-                          "description": os.getenv("DESCRIPTION"),
-                          "actsOn": os.getenv("ACTSON"),
-                          "repoURL": os.getenv("REPOURL"),
+                      data = {
+                          'name': os.environ.get('NAME'),
+                          'serviceName': os.environ.get('SERVICENAME'),
+                          'ownerName': os.environ.get('OWNERNAME'),
+                          'ownerEmail': os.environ.get('OWNEREMAIL'),
+                          'runtime': os.environ.get('RUNTIME'),
+                          'tags': os.environ.get('TAGS').split(','),
+                          'description': os.environ.get('DESCRIPTION'),
+                          'actsOn': os.environ.get('ACTSON'),
+                          'repoURL': os.environ.get('REPOURL')
                       }
+                      
                       self.send_response(200)
-                      self.send_header("Content-Type", "application/json")
+                      self.send_header('Content-type', 'application/json')
                       self.end_headers()
-                      self.wfile.write(str(resp).encode("utf-8"))
+                      self.wfile.write(json.dumps(data, indent=2).encode())
 
-              with socketserver.TCPServer(("", port), Handler) as httpd:
-                  print(f"Serving text-processor on port {port}")
+              with socketserver.TCPServer(("", 8080), RequestHandler) as httpd:
+                  print("Serving at port 8080")
                   httpd.serve_forever()
 
         # 2) image-processor (runtime: python3.10)
@@ -102,28 +102,29 @@ spec:
               import os
               import http.server
               import socketserver
+              import json
 
-              port = 8081
-              class Handler(http.server.SimpleHTTPRequestHandler):
+              class RequestHandler(http.server.SimpleHTTPRequestHandler):
                   def do_GET(self):
-                      resp = {
-                          "name": os.getenv("NAME"),
-                          "serviceName": os.getenv("SERVICENAME"),
-                          "ownerName": os.getenv("OWNERNAME"),
-                          "ownerEmail": os.getenv("OWNEREMAIL"),
-                          "runtime": os.getenv("RUNTIME"),
-                          "tags": os.getenv("TAGS"),
-                          "description": os.getenv("DESCRIPTION"),
-                          "actsOn": os.getenv("ACTSON"),
-                          "repoURL": os.getenv("REPOURL"),
+                      data = {
+                          'name': os.environ.get('NAME'),
+                          'serviceName': os.environ.get('SERVICENAME'),
+                          'ownerName': os.environ.get('OWNERNAME'),
+                          'ownerEmail': os.environ.get('OWNEREMAIL'),
+                          'runtime': os.environ.get('RUNTIME'),
+                          'tags': os.environ.get('TAGS').split(','),
+                          'description': os.environ.get('DESCRIPTION'),
+                          'actsOn': os.environ.get('ACTSON'),
+                          'repoURL': os.environ.get('REPOURL')
                       }
+                      
                       self.send_response(200)
-                      self.send_header("Content-Type", "application/json")
+                      self.send_header('Content-type', 'application/json')
                       self.end_headers()
-                      self.wfile.write(str(resp).encode("utf-8"))
+                      self.wfile.write(json.dumps(data, indent=2).encode())
 
-              with socketserver.TCPServer(("", port), Handler) as httpd:
-                  print(f"Serving image-processor on port {port}")
+              with socketserver.TCPServer(("", 8081), RequestHandler) as httpd:
+                  print("Serving at port 8081")
                   httpd.serve_forever()
 
         # 3) video-processor (runtime: python3.10)
@@ -157,28 +158,29 @@ spec:
               import os
               import http.server
               import socketserver
+              import json
 
-              port = 8082
-              class Handler(http.server.SimpleHTTPRequestHandler):
+              class RequestHandler(http.server.SimpleHTTPRequestHandler):
                   def do_GET(self):
-                      resp = {
-                          "name": os.getenv("NAME"),
-                          "serviceName": os.getenv("SERVICENAME"),
-                          "ownerName": os.getenv("OWNERNAME"),
-                          "ownerEmail": os.getenv("OWNEREMAIL"),
-                          "runtime": os.getenv("RUNTIME"),
-                          "tags": os.getenv("TAGS"),
-                          "description": os.getenv("DESCRIPTION"),
-                          "actsOn": os.getenv("ACTSON"),
-                          "repoURL": os.getenv("REPOURL"),
+                      data = {
+                          'name': os.environ.get('NAME'),
+                          'serviceName': os.environ.get('SERVICENAME'),
+                          'ownerName': os.environ.get('OWNERNAME'),
+                          'ownerEmail': os.environ.get('OWNEREMAIL'),
+                          'runtime': os.environ.get('RUNTIME'),
+                          'tags': os.environ.get('TAGS').split(','),
+                          'description': os.environ.get('DESCRIPTION'),
+                          'actsOn': os.environ.get('ACTSON'),
+                          'repoURL': os.environ.get('REPOURL')
                       }
+                      
                       self.send_response(200)
-                      self.send_header("Content-Type", "application/json")
+                      self.send_header('Content-type', 'application/json')
                       self.end_headers()
-                      self.wfile.write(str(resp).encode("utf-8"))
+                      self.wfile.write(json.dumps(data, indent=2).encode())
 
-              with socketserver.TCPServer(("", port), Handler) as httpd:
-                  print(f"Serving video-processor on port {port}")
+              with socketserver.TCPServer(("", 8082), RequestHandler) as httpd:
+                  print("Serving at port 8082")
                   httpd.serve_forever()
 
         # 4) audio-processor (runtime: java21)
@@ -217,6 +219,8 @@ spec:
               import java.io.IOException;
               import java.io.OutputStream;
               import java.net.InetSocketAddress;
+              import org.json.JSONObject;
+              import java.util.Arrays;
 
               public class SimpleHttpServer {
                   public static void main(String[] args) throws IOException {
@@ -231,20 +235,21 @@ spec:
                   static class MyHandler implements HttpHandler {
                       @Override
                       public void handle(HttpExchange t) throws IOException {
-                          String response = "{"
-                              + "\"name\":\"" + System.getenv("NAME") + "\","
-                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
-                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
-                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
-                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
-                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
-                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
-                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
-                              + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
-                              + "}";
-                          t.sendResponseHeaders(200, response.length());
+                          JSONObject response = new JSONObject();
+                          response.put("name", System.getenv("NAME"));
+                          response.put("serviceName", System.getenv("SERVICENAME"));
+                          response.put("ownerName", System.getenv("OWNERNAME"));
+                          response.put("ownerEmail", System.getenv("OWNEREMAIL"));
+                          response.put("runtime", System.getenv("RUNTIME"));
+                          response.put("tags", Arrays.asList(System.getenv("TAGS").split(",")));
+                          response.put("description", System.getenv("DESCRIPTION"));
+                          response.put("actsOn", System.getenv("ACTSON"));
+                          response.put("repoURL", System.getenv("REPOURL"));
+                          
+                          String jsonResponse = response.toString(2);
+                          t.sendResponseHeaders(200, jsonResponse.length());
                           OutputStream os = t.getResponseBody();
-                          os.write(response.getBytes());
+                          os.write(jsonResponse.getBytes());
                           os.close();
                       }
                   }
@@ -284,28 +289,29 @@ spec:
               import os
               import http.server
               import socketserver
+              import json
 
-              port = 8084
-              class Handler(http.server.SimpleHTTPRequestHandler):
+              class RequestHandler(http.server.SimpleHTTPRequestHandler):
                   def do_GET(self):
-                      resp = {
-                          "name": os.getenv("NAME"),
-                          "serviceName": os.getenv("SERVICENAME"),
-                          "ownerName": os.getenv("OWNERNAME"),
-                          "ownerEmail": os.getenv("OWNEREMAIL"),
-                          "runtime": os.getenv("RUNTIME"),
-                          "tags": os.getenv("TAGS"),
-                          "description": os.getenv("DESCRIPTION"),
-                          "actsOn": os.getenv("ACTSON"),
-                          "repoURL": os.getenv("REPOURL"),
+                      data = {
+                          'name': os.environ.get('NAME'),
+                          'serviceName': os.environ.get('SERVICENAME'),
+                          'ownerName': os.environ.get('OWNERNAME'),
+                          'ownerEmail': os.environ.get('OWNEREMAIL'),
+                          'runtime': os.environ.get('RUNTIME'),
+                          'tags': os.environ.get('TAGS').split(','),
+                          'description': os.environ.get('DESCRIPTION'),
+                          'actsOn': os.environ.get('ACTSON'),
+                          'repoURL': os.environ.get('REPOURL')
                       }
+                      
                       self.send_response(200)
-                      self.send_header("Content-Type", "application/json")
+                      self.send_header('Content-type', 'application/json')
                       self.end_headers()
-                      self.wfile.write(str(resp).encode("utf-8"))
+                      self.wfile.write(json.dumps(data, indent=2).encode())
 
-              with socketserver.TCPServer(("", port), Handler) as httpd:
-                  print(f"Serving pdf-processor on port {port}")
+              with socketserver.TCPServer(("", 8084), RequestHandler) as httpd:
+                  print("Serving at port 8084")
                   httpd.serve_forever()
 
         # 6) csv-processor (runtime: python3.10)
@@ -339,28 +345,29 @@ spec:
               import os
               import http.server
               import socketserver
+              import json
 
-              port = 8085
-              class Handler(http.server.SimpleHTTPRequestHandler):
+              class RequestHandler(http.server.SimpleHTTPRequestHandler):
                   def do_GET(self):
-                      resp = {
-                          "name": os.getenv("NAME"),
-                          "serviceName": os.getenv("SERVICENAME"),
-                          "ownerName": os.getenv("OWNERNAME"),
-                          "ownerEmail": os.getenv("OWNEREMAIL"),
-                          "runtime": os.getenv("RUNTIME"),
-                          "tags": os.getenv("TAGS"),
-                          "description": os.getenv("DESCRIPTION"),
-                          "actsOn": os.getenv("ACTSON"),
-                          "repoURL": os.getenv("REPOURL"),
+                      data = {
+                          'name': os.environ.get('NAME'),
+                          'serviceName': os.environ.get('SERVICENAME'),
+                          'ownerName': os.environ.get('OWNERNAME'),
+                          'ownerEmail': os.environ.get('OWNEREMAIL'),
+                          'runtime': os.environ.get('RUNTIME'),
+                          'tags': os.environ.get('TAGS').split(','),
+                          'description': os.environ.get('DESCRIPTION'),
+                          'actsOn': os.environ.get('ACTSON'),
+                          'repoURL': os.environ.get('REPOURL')
                       }
+                      
                       self.send_response(200)
-                      self.send_header("Content-Type", "application/json")
+                      self.send_header('Content-type', 'application/json')
                       self.end_headers()
-                      self.wfile.write(str(resp).encode("utf-8"))
+                      self.wfile.write(json.dumps(data, indent=2).encode())
 
-              with socketserver.TCPServer(("", port), Handler) as httpd:
-                  print(f"Serving csv-processor on port {port}")
+              with socketserver.TCPServer(("", 8085), RequestHandler) as httpd:
+                  print("Serving at port 8085")
                   httpd.serve_forever()
 
         # 7) json-processor (runtime: python3.10)
@@ -394,28 +401,29 @@ spec:
               import os
               import http.server
               import socketserver
+              import json
 
-              port = 8086
-              class Handler(http.server.SimpleHTTPRequestHandler):
+              class RequestHandler(http.server.SimpleHTTPRequestHandler):
                   def do_GET(self):
-                      resp = {
-                          "name": os.getenv("NAME"),
-                          "serviceName": os.getenv("SERVICENAME"),
-                          "ownerName": os.getenv("OWNERNAME"),
-                          "ownerEmail": os.getenv("OWNEREMAIL"),
-                          "runtime": os.getenv("RUNTIME"),
-                          "tags": os.getenv("TAGS"),
-                          "description": os.getenv("DESCRIPTION"),
-                          "actsOn": os.getenv("ACTSON"),
-                          "repoURL": os.getenv("REPOURL"),
+                      data = {
+                          'name': os.environ.get('NAME'),
+                          'serviceName': os.environ.get('SERVICENAME'),
+                          'ownerName': os.environ.get('OWNERNAME'),
+                          'ownerEmail': os.environ.get('OWNEREMAIL'),
+                          'runtime': os.environ.get('RUNTIME'),
+                          'tags': os.environ.get('TAGS').split(','),
+                          'description': os.environ.get('DESCRIPTION'),
+                          'actsOn': os.environ.get('ACTSON'),
+                          'repoURL': os.environ.get('REPOURL')
                       }
+                      
                       self.send_response(200)
-                      self.send_header("Content-Type", "application/json")
+                      self.send_header('Content-type', 'application/json')
                       self.end_headers()
-                      self.wfile.write(str(resp).encode("utf-8"))
+                      self.wfile.write(json.dumps(data, indent=2).encode())
 
-              with socketserver.TCPServer(("", port), Handler) as httpd:
-                  print(f"Serving json-processor on port {port}")
+              with socketserver.TCPServer(("", 8086), RequestHandler) as httpd:
+                  print("Serving at port 8086")
                   httpd.serve_forever()
 
         # 8) xml-processor (runtime: java21)
@@ -454,6 +462,8 @@ spec:
               import java.io.IOException;
               import java.io.OutputStream;
               import java.net.InetSocketAddress;
+              import org.json.JSONObject;
+              import java.util.Arrays;
 
               public class SimpleHttpServer {
                   public static void main(String[] args) throws IOException {
@@ -468,20 +478,21 @@ spec:
                   static class MyHandler implements HttpHandler {
                       @Override
                       public void handle(HttpExchange t) throws IOException {
-                          String response = "{"
-                              + "\"name\":\"" + System.getenv("NAME") + "\","
-                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
-                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
-                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
-                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
-                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
-                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
-                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
-                              + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
-                              + "}";
-                          t.sendResponseHeaders(200, response.length());
+                          JSONObject response = new JSONObject();
+                          response.put("name", System.getenv("NAME"));
+                          response.put("serviceName", System.getenv("SERVICENAME"));
+                          response.put("ownerName", System.getenv("OWNERNAME"));
+                          response.put("ownerEmail", System.getenv("OWNEREMAIL"));
+                          response.put("runtime", System.getenv("RUNTIME"));
+                          response.put("tags", Arrays.asList(System.getenv("TAGS").split(",")));
+                          response.put("description", System.getenv("DESCRIPTION"));
+                          response.put("actsOn", System.getenv("ACTSON"));
+                          response.put("repoURL", System.getenv("REPOURL"));
+                          
+                          String jsonResponse = response.toString(2);
+                          t.sendResponseHeaders(200, jsonResponse.length());
                           OutputStream os = t.getResponseBody();
-                          os.write(response.getBytes());
+                          os.write(jsonResponse.getBytes());
                           os.close();
                       }
                   }
@@ -521,28 +532,29 @@ spec:
               import os
               import http.server
               import socketserver
+              import json
 
-              port = 8088
-              class Handler(http.server.SimpleHTTPRequestHandler):
+              class RequestHandler(http.server.SimpleHTTPRequestHandler):
                   def do_GET(self):
-                      resp = {
-                          "name": os.getenv("NAME"),
-                          "serviceName": os.getenv("SERVICENAME"),
-                          "ownerName": os.getenv("OWNERNAME"),
-                          "ownerEmail": os.getenv("OWNEREMAIL"),
-                          "runtime": os.getenv("RUNTIME"),
-                          "tags": os.getenv("TAGS"),
-                          "description": os.getenv("DESCRIPTION"),
-                          "actsOn": os.getenv("ACTSON"),
-                          "repoURL": os.getenv("REPOURL"),
+                      data = {
+                          'name': os.environ.get('NAME'),
+                          'serviceName': os.environ.get('SERVICENAME'),
+                          'ownerName': os.environ.get('OWNERNAME'),
+                          'ownerEmail': os.environ.get('OWNEREMAIL'),
+                          'runtime': os.environ.get('RUNTIME'),
+                          'tags': os.environ.get('TAGS').split(','),
+                          'description': os.environ.get('DESCRIPTION'),
+                          'actsOn': os.environ.get('ACTSON'),
+                          'repoURL': os.environ.get('REPOURL')
                       }
+                      
                       self.send_response(200)
-                      self.send_header("Content-Type", "application/json")
+                      self.send_header('Content-type', 'application/json')
                       self.end_headers()
-                      self.wfile.write(str(resp).encode("utf-8"))
+                      self.wfile.write(json.dumps(data, indent=2).encode())
 
-              with socketserver.TCPServer(("", port), Handler) as httpd:
-                  print(f"Serving excel-processor on port {port}")
+              with socketserver.TCPServer(("", 8088), RequestHandler) as httpd:
+                  print("Serving at port 8088")
                   httpd.serve_forever()
 
         # 10) markdown-processor (runtime: python3.10)
@@ -576,26 +588,27 @@ spec:
               import os
               import http.server
               import socketserver
+              import json
 
-              port = 8089
-              class Handler(http.server.SimpleHTTPRequestHandler):
+              class RequestHandler(http.server.SimpleHTTPRequestHandler):
                   def do_GET(self):
-                      resp = {
-                          "name": os.getenv("NAME"),
-                          "serviceName": os.getenv("SERVICENAME"),
-                          "ownerName": os.getenv("OWNERNAME"),
-                          "ownerEmail": os.getenv("OWNEREMAIL"),
-                          "runtime": os.getenv("RUNTIME"),
-                          "tags": os.getenv("TAGS"),
-                          "description": os.getenv("DESCRIPTION"),
-                          "actsOn": os.getenv("ACTSON"),
-                          "repoURL": os.getenv("REPOURL"),
+                      data = {
+                          'name': os.environ.get('NAME'),
+                          'serviceName': os.environ.get('SERVICENAME'),
+                          'ownerName': os.environ.get('OWNERNAME'),
+                          'ownerEmail': os.environ.get('OWNEREMAIL'),
+                          'runtime': os.environ.get('RUNTIME'),
+                          'tags': os.environ.get('TAGS').split(','),
+                          'description': os.environ.get('DESCRIPTION'),
+                          'actsOn': os.environ.get('ACTSON'),
+                          'repoURL': os.environ.get('REPOURL')
                       }
+                      
                       self.send_response(200)
-                      self.send_header("Content-Type", "application/json")
+                      self.send_header('Content-type', 'application/json')
                       self.end_headers()
-                      self.wfile.write(str(resp).encode("utf-8"))
+                      self.wfile.write(json.dumps(data, indent=2).encode())
 
-              with socketserver.TCPServer(("", port), Handler) as httpd:
-                  print(f"Serving markdown-processor on port {port}")
+              with socketserver.TCPServer(("", 8089), RequestHandler) as httpd:
+                  print("Serving at port 8089")
                   httpd.serve_forever()
