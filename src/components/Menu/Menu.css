@@ -30,3 +30,12 @@
 .menu-item:active {
   background-color: #dee2e6;
 }
+
+.menu-item.selected {
+  background-color: #af3c43;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.menu-item.selected:hover {
+  background-color: #8c2f35;
+}

@@ -1,16 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../../components/Header/Header";
 import Menubar from "../../components/Menu/Menu";
 import Solutionlist from "../../components/Content/Content";
 import "./HomePage.css";
 
 const HomePage = () => {
+  const [selectedSolutionIds, setSelectedSolutionIds] = useState(null);
+
+  const handleTagSelect = (solutionIds) => {
+    setSelectedSolutionIds(solutionIds);
+  };
+
   return (
     <div className="home-container">
       <Header />
       <div className="home-content">
-        <Menubar />
-        <Solutionlist />
+        <Menubar onTagSelect={handleTagSelect} />
+        <Solutionlist selectedSolutionIds={selectedSolutionIds} />
       </div>
     </div>
   );

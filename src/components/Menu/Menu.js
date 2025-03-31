@@ -1,23 +1,45 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { getUniqueTags, fetchAllSolutions } from "../../services/api";
 import "./Menu.css";
 
-const options = [
-  "Option-1",
-  "Option-2",
-  "Option-3",
-  "Option-4",
-  "Option-5",
-  "Option-6",
-  "Option-7",
-];
+const Menubar = ({ onTagSelect }) => {
+  const [tags, setTags] = useState([]);
+  const [selectedTag, setSelectedTag] = useState(null);
 
-const Menubar = () => {
+  useEffect(() => {
+    const loadData = async () => {
+      // First fetch all solutions to populate the tags
+      await fetchAllSolutions();
+      // Then get the unique tags
+      const uniqueTags = getUniqueTags();
+      setTags(uniqueTags);
+    };
+
+    loadData();
+  }, []);
+
+  const handleTagClick = (tag) => {
+    if (selectedTag === tag.tag) {
+      // If clicking the same tag, deselect it
+      setSelectedTag(null);
+      onTagSelect(null);
+    } else {
+      // Select the new tag
+      setSelectedTag(tag.tag);
+      onTagSelect(tag.ids);
+    }
+  };
+
   return (
     <div className="menu-container">
       <nav className="menu">
-        {options.map((option, index) => (
-          <div key={index} className="menu-item">
-            {option}
+        {tags.map((tag, index) => (
+          <div
+            key={index}
+            className={`menu-item ${selectedTag === tag.tag ? "selected" : ""}`}
+            onClick={() => handleTagClick(tag)}
+          >
+            {tag.tag}
           </div>
         ))}
       </nav>
