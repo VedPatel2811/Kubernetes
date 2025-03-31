@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Description.css";
 import { useParams, useLocation } from "react-router-dom";
+import { fetchSolutionById } from "../../services/api";
 
 const Description = () => {
   const { id } = useParams();
@@ -9,25 +10,11 @@ const Description = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchSolution = async () => {
+    const loadSolution = async () => {
       try {
-        // Get the port from the navigation state
-        const port = location.state?.port || 8080; // Default to 8080 if no port is provided
-        const response = await fetch(`http://127.0.0.1:${port}/`);
-        const data = await response.json();
-        setSolution({
-          id: parseInt(id),
-          title: data.name,
-          description: data.description,
-          serviceName: data.serviceName,
-          ownerName: data.ownerName,
-          runtime: data.runtime,
-          tags: data.tags,
-          ownerEmail: data.ownerEmail,
-          repoURL: data.repoURL,
-          actsOn: data.actsOn,
-          port: port,
-        });
+        const port = location.state?.port || 8080;
+        const data = await fetchSolutionById(id, port);
+        setSolution(data);
       } catch (error) {
         console.error("Error fetching solution:", error);
       } finally {
@@ -35,7 +22,7 @@ const Description = () => {
       }
     };
 
-    fetchSolution();
+    loadSolution();
   }, [id, location.state?.port]);
 
   if (loading) {
@@ -77,13 +64,6 @@ const Description = () => {
             <p>
               <strong>Acts On:</strong> {solution.actsOn}
             </p>
-          </div>
-          <div className="tags">
-            {solution.tags.split(",").map((tag, index) => (
-              <span key={index} className="tag">
-                {tag.trim()}
-              </span>
-            ))}
           </div>
         </section>
 
