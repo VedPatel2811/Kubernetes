@@ -1,26 +1,58 @@
 // src/Views/Home/Solutionlist.js
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Content.css";
 
-export const solutions = [
-  { id: 1, title: "Solution-1", meta: "GitHub • MM/DD/YYYY" },
-  { id: 2, title: "Solution-2", meta: "GitHub • MM/DD/YYYY" },
-  { id: 3, title: "Solution-3", meta: "GitHub • MM/DD/YYYY" },
-  { id: 4, title: "Solution-4", meta: "GitHub • MM/DD/YYYY" },
-  { id: 5, title: "Solution-5", meta: "GitHub • MM/DD/YYYY" },
-  { id: 6, title: "Solution-6", meta: "GitHub • MM/DD/YYYY" },
-  { id: 7, title: "Solution-7", meta: "GitHub • MM/DD/YYYY" },
-  { id: 8, title: "Solution-8", meta: "GitHub • MM/DD/YYYY" },
-  { id: 9, title: "Solution-9", meta: "GitHub • MM/DD/YYYY" },
-  { id: 10, title: "Solution-10", meta: "GitHub • MM/DD/YYYY" },
-];
-
 const Solutionlist = () => {
   const navigate = useNavigate();
+  const [solutions, setSolutions] = useState([]);
+
+  useEffect(() => {
+    const fetchSolutions = async () => {
+      try {
+        const allSolutions = [];
+
+        // Fetch data from all ports (8080-8089)
+        for (let port = 8080; port <= 8089; port++) {
+          try {
+            const response = await fetch(`http://127.0.0.1:${port}/`);
+            if (!response.ok) {
+              console.warn(`Failed to fetch from port ${port}`);
+              continue;
+            }
+            const data = await response.json();
+            allSolutions.push({ ...data, port }); // Add port information to the data
+          } catch (error) {
+            console.warn(`Error fetching from port ${port}:`, error);
+            continue;
+          }
+        }
+
+        // Transform the API data to match our solution format
+        const transformedData = allSolutions.map((item, index) => ({
+          id: index + 1,
+          title: item.name,
+          meta: `${item.serviceName} • ${item.ownerName}`,
+          description: item.description,
+          runtime: item.runtime,
+          tags: item.tags,
+          ownerEmail: item.ownerEmail,
+          repoURL: item.repoURL,
+          actsOn: item.actsOn,
+          port: item.port, // Include port in the transformed data
+        }));
+
+        setSolutions(transformedData);
+      } catch (error) {
+        console.error("Error fetching solutions:", error);
+      }
+    };
+
+    fetchSolutions();
+  }, []);
 
   function onClick(solution) {
-    navigate(`/solution/${solution.id}`);
+    navigate(`/solution/${solution.id}`, { state: { port: solution.port } });
   }
 
   return (

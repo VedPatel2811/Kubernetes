@@ -15,9 +15,9 @@ spec:
         app: my-processor
     spec:
       containers:
-        # 1) text-processor (runtime: python3.10)
+        # 1) text-processor
         - name: text-processor
-          image: docker.io/library/python:3.10-slim
+          image: docker.io/library/openjdk:21-jdk-slim
           env:
             - name: NAME
               value: "Text Processor"
@@ -28,7 +28,7 @@ spec:
             - name: OWNEREMAIL
               value: "alice@example.com"
             - name: RUNTIME
-              value: "python3.10"
+              value: "java21"
             - name: TAGS
               value: "text,processing"
             - name: DESCRIPTION
@@ -39,41 +39,71 @@ spec:
               value: "https://github.com/alice/text-processor"
           ports:
             - containerPort: 8080
-          command: ["python"]
+          command: ["/bin/bash"]
           args:
             - -c
             - |
-              import os
-              import http.server
-              import socketserver
-              import json
+              echo "Starting text-processor on port 8080"
+              cat <<EOF > SimpleHttpServer.java
+              import com.sun.net.httpserver.HttpServer;
+              import com.sun.net.httpserver.HttpHandler;
+              import com.sun.net.httpserver.HttpExchange;
+              import java.io.IOException;
+              import java.io.OutputStream;
+              import java.net.InetSocketAddress;
+              import java.util.HashMap;
+              import java.util.Map;
 
-              class RequestHandler(http.server.SimpleHTTPRequestHandler):
-                  def do_GET(self):
-                      data = {
-                          'name': os.environ.get('NAME'),
-                          'serviceName': os.environ.get('SERVICENAME'),
-                          'ownerName': os.environ.get('OWNERNAME'),
-                          'ownerEmail': os.environ.get('OWNEREMAIL'),
-                          'runtime': os.environ.get('RUNTIME'),
-                          'tags': os.environ.get('TAGS').split(','),
-                          'description': os.environ.get('DESCRIPTION'),
-                          'actsOn': os.environ.get('ACTSON'),
-                          'repoURL': os.environ.get('REPOURL')
+              public class SimpleHttpServer {
+                  public static void main(String[] args) throws IOException {
+                      int port = 8080;
+                      HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+                      server.createContext("/", new MyHandler());
+                      server.setExecutor(null);
+                      System.out.println("Serving text-processor on port " + port);
+                      server.start();
+                  }
+
+                  static class MyHandler implements HttpHandler {
+                      @Override
+                      public void handle(HttpExchange t) throws IOException {
+                          // Add CORS headers
+                          t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+                          t.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                          t.getResponseHeaders().add("Access-Control-Allow-Headers", "*");
+                          t.getResponseHeaders().add("Access-Control-Max-Age", "3600");
+
+                          // Handle OPTIONS request for CORS preflight
+                          if (t.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                              t.sendResponseHeaders(204, -1);
+                              return;
+                          }
+
+                          String response = "{"
+                              + "\"name\":\"" + System.getenv("NAME") + "\","
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
+                              + "}";
+                          t.sendResponseHeaders(200, response.length());
+                          try (OutputStream os = t.getResponseBody()) {
+                              os.write(response.getBytes());
+                          }
                       }
-                      
-                      self.send_response(200)
-                      self.send_header('Content-type', 'application/json')
-                      self.end_headers()
-                      self.wfile.write(json.dumps(data, indent=2).encode())
+                  }
+              }
+              EOF
+              javac SimpleHttpServer.java
+              java SimpleHttpServer
 
-              with socketserver.TCPServer(("", 8080), RequestHandler) as httpd:
-                  print("Serving at port 8080")
-                  httpd.serve_forever()
-
-        # 2) image-processor (runtime: python3.10)
+        # 2) image-processor
         - name: image-processor
-          image: docker.io/library/python:3.10-slim
+          image: docker.io/library/openjdk:21-jdk-slim
           env:
             - name: NAME
               value: "Image Processor"
@@ -84,7 +114,7 @@ spec:
             - name: OWNEREMAIL
               value: "alice@example.com"
             - name: RUNTIME
-              value: "python3.10"
+              value: "java21"
             - name: TAGS
               value: "image,processing,jpeg"
             - name: DESCRIPTION
@@ -95,41 +125,71 @@ spec:
               value: "https://github.com/alice/image-processor"
           ports:
             - containerPort: 8081
-          command: ["python"]
+          command: ["/bin/bash"]
           args:
             - -c
             - |
-              import os
-              import http.server
-              import socketserver
-              import json
+              echo "Starting image-processor on port 8081"
+              cat <<EOF > SimpleHttpServer.java
+              import com.sun.net.httpserver.HttpServer;
+              import com.sun.net.httpserver.HttpHandler;
+              import com.sun.net.httpserver.HttpExchange;
+              import java.io.IOException;
+              import java.io.OutputStream;
+              import java.net.InetSocketAddress;
+              import java.util.HashMap;
+              import java.util.Map;
 
-              class RequestHandler(http.server.SimpleHTTPRequestHandler):
-                  def do_GET(self):
-                      data = {
-                          'name': os.environ.get('NAME'),
-                          'serviceName': os.environ.get('SERVICENAME'),
-                          'ownerName': os.environ.get('OWNERNAME'),
-                          'ownerEmail': os.environ.get('OWNEREMAIL'),
-                          'runtime': os.environ.get('RUNTIME'),
-                          'tags': os.environ.get('TAGS').split(','),
-                          'description': os.environ.get('DESCRIPTION'),
-                          'actsOn': os.environ.get('ACTSON'),
-                          'repoURL': os.environ.get('REPOURL')
+              public class SimpleHttpServer {
+                  public static void main(String[] args) throws IOException {
+                      int port = 8081;
+                      HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+                      server.createContext("/", new MyHandler());
+                      server.setExecutor(null);
+                      System.out.println("Serving image-processor on port " + port);
+                      server.start();
+                  }
+
+                  static class MyHandler implements HttpHandler {
+                      @Override
+                      public void handle(HttpExchange t) throws IOException {
+                          // Add CORS headers
+                          t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+                          t.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                          t.getResponseHeaders().add("Access-Control-Allow-Headers", "*");
+                          t.getResponseHeaders().add("Access-Control-Max-Age", "3600");
+
+                          // Handle OPTIONS request for CORS preflight
+                          if (t.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                              t.sendResponseHeaders(204, -1);
+                              return;
+                          }
+
+                          String response = "{"
+                              + "\"name\":\"" + System.getenv("NAME") + "\","
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
+                              + "}";
+                          t.sendResponseHeaders(200, response.length());
+                          try (OutputStream os = t.getResponseBody()) {
+                              os.write(response.getBytes());
+                          }
                       }
-                      
-                      self.send_response(200)
-                      self.send_header('Content-type', 'application/json')
-                      self.end_headers()
-                      self.wfile.write(json.dumps(data, indent=2).encode())
+                  }
+              }
+              EOF
+              javac SimpleHttpServer.java
+              java SimpleHttpServer
 
-              with socketserver.TCPServer(("", 8081), RequestHandler) as httpd:
-                  print("Serving at port 8081")
-                  httpd.serve_forever()
-
-        # 3) video-processor (runtime: python3.10)
+        # 3) video-processor
         - name: video-processor
-          image: docker.io/library/python:3.10-slim
+          image: docker.io/library/openjdk:21-jdk-slim
           env:
             - name: NAME
               value: "Video Processor"
@@ -140,7 +200,7 @@ spec:
             - name: OWNEREMAIL
               value: "bob@example.com"
             - name: RUNTIME
-              value: "python3.10"
+              value: "java21"
             - name: TAGS
               value: "video,processing,mp4"
             - name: DESCRIPTION
@@ -151,39 +211,69 @@ spec:
               value: "https://github.com/bob/video-processor"
           ports:
             - containerPort: 8082
-          command: ["python"]
+          command: ["/bin/bash"]
           args:
             - -c
             - |
-              import os
-              import http.server
-              import socketserver
-              import json
+              echo "Starting video-processor on port 8082"
+              cat <<EOF > SimpleHttpServer.java
+              import com.sun.net.httpserver.HttpServer;
+              import com.sun.net.httpserver.HttpHandler;
+              import com.sun.net.httpserver.HttpExchange;
+              import java.io.IOException;
+              import java.io.OutputStream;
+              import java.net.InetSocketAddress;
+              import java.util.HashMap;
+              import java.util.Map;
 
-              class RequestHandler(http.server.SimpleHTTPRequestHandler):
-                  def do_GET(self):
-                      data = {
-                          'name': os.environ.get('NAME'),
-                          'serviceName': os.environ.get('SERVICENAME'),
-                          'ownerName': os.environ.get('OWNERNAME'),
-                          'ownerEmail': os.environ.get('OWNEREMAIL'),
-                          'runtime': os.environ.get('RUNTIME'),
-                          'tags': os.environ.get('TAGS').split(','),
-                          'description': os.environ.get('DESCRIPTION'),
-                          'actsOn': os.environ.get('ACTSON'),
-                          'repoURL': os.environ.get('REPOURL')
+              public class SimpleHttpServer {
+                  public static void main(String[] args) throws IOException {
+                      int port = 8082;
+                      HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+                      server.createContext("/", new MyHandler());
+                      server.setExecutor(null);
+                      System.out.println("Serving video-processor on port " + port);
+                      server.start();
+                  }
+
+                  static class MyHandler implements HttpHandler {
+                      @Override
+                      public void handle(HttpExchange t) throws IOException {
+                          // Add CORS headers
+                          t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+                          t.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                          t.getResponseHeaders().add("Access-Control-Allow-Headers", "*");
+                          t.getResponseHeaders().add("Access-Control-Max-Age", "3600");
+
+                          // Handle OPTIONS request for CORS preflight
+                          if (t.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                              t.sendResponseHeaders(204, -1);
+                              return;
+                          }
+
+                          String response = "{"
+                              + "\"name\":\"" + System.getenv("NAME") + "\","
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
+                              + "}";
+                          t.sendResponseHeaders(200, response.length());
+                          try (OutputStream os = t.getResponseBody()) {
+                              os.write(response.getBytes());
+                          }
                       }
-                      
-                      self.send_response(200)
-                      self.send_header('Content-type', 'application/json')
-                      self.end_headers()
-                      self.wfile.write(json.dumps(data, indent=2).encode())
+                  }
+              }
+              EOF
+              javac SimpleHttpServer.java
+              java SimpleHttpServer
 
-              with socketserver.TCPServer(("", 8082), RequestHandler) as httpd:
-                  print("Serving at port 8082")
-                  httpd.serve_forever()
-
-        # 4) audio-processor (runtime: java21)
+        # 4) audio-processor
         - name: audio-processor
           image: docker.io/library/openjdk:21-jdk-slim
           env:
@@ -219,15 +309,15 @@ spec:
               import java.io.IOException;
               import java.io.OutputStream;
               import java.net.InetSocketAddress;
-              import org.json.JSONObject;
-              import java.util.Arrays;
+              import java.util.HashMap;
+              import java.util.Map;
 
               public class SimpleHttpServer {
                   public static void main(String[] args) throws IOException {
                       int port = 8083;
                       HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
                       server.createContext("/", new MyHandler());
-                      server.setExecutor(null); 
+                      server.setExecutor(null);
                       System.out.println("Serving audio-processor on port " + port);
                       server.start();
                   }
@@ -235,22 +325,33 @@ spec:
                   static class MyHandler implements HttpHandler {
                       @Override
                       public void handle(HttpExchange t) throws IOException {
-                          JSONObject response = new JSONObject();
-                          response.put("name", System.getenv("NAME"));
-                          response.put("serviceName", System.getenv("SERVICENAME"));
-                          response.put("ownerName", System.getenv("OWNERNAME"));
-                          response.put("ownerEmail", System.getenv("OWNEREMAIL"));
-                          response.put("runtime", System.getenv("RUNTIME"));
-                          response.put("tags", Arrays.asList(System.getenv("TAGS").split(",")));
-                          response.put("description", System.getenv("DESCRIPTION"));
-                          response.put("actsOn", System.getenv("ACTSON"));
-                          response.put("repoURL", System.getenv("REPOURL"));
-                          
-                          String jsonResponse = response.toString(2);
-                          t.sendResponseHeaders(200, jsonResponse.length());
-                          OutputStream os = t.getResponseBody();
-                          os.write(jsonResponse.getBytes());
-                          os.close();
+                          // Add CORS headers
+                          t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+                          t.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                          t.getResponseHeaders().add("Access-Control-Allow-Headers", "*");
+                          t.getResponseHeaders().add("Access-Control-Max-Age", "3600");
+
+                          // Handle OPTIONS request for CORS preflight
+                          if (t.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                              t.sendResponseHeaders(204, -1);
+                              return;
+                          }
+
+                          String response = "{"
+                              + "\"name\":\"" + System.getenv("NAME") + "\","
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
+                              + "}";
+                          t.sendResponseHeaders(200, response.length());
+                          try (OutputStream os = t.getResponseBody()) {
+                              os.write(response.getBytes());
+                          }
                       }
                   }
               }
@@ -258,9 +359,9 @@ spec:
               javac SimpleHttpServer.java
               java SimpleHttpServer
 
-        # 5) pdf-processor (runtime: python3.10)
+        # 5) pdf-processor
         - name: pdf-processor
-          image: docker.io/library/python:3.10-slim
+          image: docker.io/library/openjdk:21-jdk-slim
           env:
             - name: NAME
               value: "PDF Processor"
@@ -271,7 +372,7 @@ spec:
             - name: OWNEREMAIL
               value: "diana@example.com"
             - name: RUNTIME
-              value: "python3.10"
+              value: "java21"
             - name: TAGS
               value: "pdf,processing,text"
             - name: DESCRIPTION
@@ -282,41 +383,71 @@ spec:
               value: "https://github.com/diana/pdf-processor"
           ports:
             - containerPort: 8084
-          command: ["python"]
+          command: ["/bin/bash"]
           args:
             - -c
             - |
-              import os
-              import http.server
-              import socketserver
-              import json
+              echo "Starting pdf-processor on port 8084"
+              cat <<EOF > SimpleHttpServer.java
+              import com.sun.net.httpserver.HttpServer;
+              import com.sun.net.httpserver.HttpHandler;
+              import com.sun.net.httpserver.HttpExchange;
+              import java.io.IOException;
+              import java.io.OutputStream;
+              import java.net.InetSocketAddress;
+              import java.util.HashMap;
+              import java.util.Map;
 
-              class RequestHandler(http.server.SimpleHTTPRequestHandler):
-                  def do_GET(self):
-                      data = {
-                          'name': os.environ.get('NAME'),
-                          'serviceName': os.environ.get('SERVICENAME'),
-                          'ownerName': os.environ.get('OWNERNAME'),
-                          'ownerEmail': os.environ.get('OWNEREMAIL'),
-                          'runtime': os.environ.get('RUNTIME'),
-                          'tags': os.environ.get('TAGS').split(','),
-                          'description': os.environ.get('DESCRIPTION'),
-                          'actsOn': os.environ.get('ACTSON'),
-                          'repoURL': os.environ.get('REPOURL')
+              public class SimpleHttpServer {
+                  public static void main(String[] args) throws IOException {
+                      int port = 8084;
+                      HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+                      server.createContext("/", new MyHandler());
+                      server.setExecutor(null);
+                      System.out.println("Serving pdf-processor on port " + port);
+                      server.start();
+                  }
+
+                  static class MyHandler implements HttpHandler {
+                      @Override
+                      public void handle(HttpExchange t) throws IOException {
+                          // Add CORS headers
+                          t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+                          t.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                          t.getResponseHeaders().add("Access-Control-Allow-Headers", "*");
+                          t.getResponseHeaders().add("Access-Control-Max-Age", "3600");
+
+                          // Handle OPTIONS request for CORS preflight
+                          if (t.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                              t.sendResponseHeaders(204, -1);
+                              return;
+                          }
+
+                          String response = "{"
+                              + "\"name\":\"" + System.getenv("NAME") + "\","
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
+                              + "}";
+                          t.sendResponseHeaders(200, response.length());
+                          try (OutputStream os = t.getResponseBody()) {
+                              os.write(response.getBytes());
+                          }
                       }
-                      
-                      self.send_response(200)
-                      self.send_header('Content-type', 'application/json')
-                      self.end_headers()
-                      self.wfile.write(json.dumps(data, indent=2).encode())
+                  }
+              }
+              EOF
+              javac SimpleHttpServer.java
+              java SimpleHttpServer
 
-              with socketserver.TCPServer(("", 8084), RequestHandler) as httpd:
-                  print("Serving at port 8084")
-                  httpd.serve_forever()
-
-        # 6) csv-processor (runtime: python3.10)
+        # 6) csv-processor
         - name: csv-processor
-          image: docker.io/library/python:3.10-slim
+          image: docker.io/library/openjdk:21-jdk-slim
           env:
             - name: NAME
               value: "CSV Processor"
@@ -327,7 +458,7 @@ spec:
             - name: OWNEREMAIL
               value: "eve@example.com"
             - name: RUNTIME
-              value: "python3.10"
+              value: "java21"
             - name: TAGS
               value: "csv,data,processing"
             - name: DESCRIPTION
@@ -338,41 +469,71 @@ spec:
               value: "https://github.com/eve/csv-processor"
           ports:
             - containerPort: 8085
-          command: ["python"]
+          command: ["/bin/bash"]
           args:
             - -c
             - |
-              import os
-              import http.server
-              import socketserver
-              import json
+              echo "Starting csv-processor on port 8085"
+              cat <<EOF > SimpleHttpServer.java
+              import com.sun.net.httpserver.HttpServer;
+              import com.sun.net.httpserver.HttpHandler;
+              import com.sun.net.httpserver.HttpExchange;
+              import java.io.IOException;
+              import java.io.OutputStream;
+              import java.net.InetSocketAddress;
+              import java.util.HashMap;
+              import java.util.Map;
 
-              class RequestHandler(http.server.SimpleHTTPRequestHandler):
-                  def do_GET(self):
-                      data = {
-                          'name': os.environ.get('NAME'),
-                          'serviceName': os.environ.get('SERVICENAME'),
-                          'ownerName': os.environ.get('OWNERNAME'),
-                          'ownerEmail': os.environ.get('OWNEREMAIL'),
-                          'runtime': os.environ.get('RUNTIME'),
-                          'tags': os.environ.get('TAGS').split(','),
-                          'description': os.environ.get('DESCRIPTION'),
-                          'actsOn': os.environ.get('ACTSON'),
-                          'repoURL': os.environ.get('REPOURL')
+              public class SimpleHttpServer {
+                  public static void main(String[] args) throws IOException {
+                      int port = 8085;
+                      HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+                      server.createContext("/", new MyHandler());
+                      server.setExecutor(null);
+                      System.out.println("Serving csv-processor on port " + port);
+                      server.start();
+                  }
+
+                  static class MyHandler implements HttpHandler {
+                      @Override
+                      public void handle(HttpExchange t) throws IOException {
+                          // Add CORS headers
+                          t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+                          t.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                          t.getResponseHeaders().add("Access-Control-Allow-Headers", "*");
+                          t.getResponseHeaders().add("Access-Control-Max-Age", "3600");
+
+                          // Handle OPTIONS request for CORS preflight
+                          if (t.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                              t.sendResponseHeaders(204, -1);
+                              return;
+                          }
+
+                          String response = "{"
+                              + "\"name\":\"" + System.getenv("NAME") + "\","
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
+                              + "}";
+                          t.sendResponseHeaders(200, response.length());
+                          try (OutputStream os = t.getResponseBody()) {
+                              os.write(response.getBytes());
+                          }
                       }
-                      
-                      self.send_response(200)
-                      self.send_header('Content-type', 'application/json')
-                      self.end_headers()
-                      self.wfile.write(json.dumps(data, indent=2).encode())
+                  }
+              }
+              EOF
+              javac SimpleHttpServer.java
+              java SimpleHttpServer
 
-              with socketserver.TCPServer(("", 8085), RequestHandler) as httpd:
-                  print("Serving at port 8085")
-                  httpd.serve_forever()
-
-        # 7) json-processor (runtime: python3.10)
+        # 7) json-processor
         - name: json-processor
-          image: docker.io/library/python:3.10-slim
+          image: docker.io/library/openjdk:21-jdk-slim
           env:
             - name: NAME
               value: "JSON Processor"
@@ -383,7 +544,7 @@ spec:
             - name: OWNEREMAIL
               value: "frank@example.com"
             - name: RUNTIME
-              value: "python3.10"
+              value: "java21"
             - name: TAGS
               value: "json,api,processing"
             - name: DESCRIPTION
@@ -394,39 +555,69 @@ spec:
               value: "https://github.com/frank/json-processor"
           ports:
             - containerPort: 8086
-          command: ["python"]
+          command: ["/bin/bash"]
           args:
             - -c
             - |
-              import os
-              import http.server
-              import socketserver
-              import json
+              echo "Starting json-processor on port 8086"
+              cat <<EOF > SimpleHttpServer.java
+              import com.sun.net.httpserver.HttpServer;
+              import com.sun.net.httpserver.HttpHandler;
+              import com.sun.net.httpserver.HttpExchange;
+              import java.io.IOException;
+              import java.io.OutputStream;
+              import java.net.InetSocketAddress;
+              import java.util.HashMap;
+              import java.util.Map;
 
-              class RequestHandler(http.server.SimpleHTTPRequestHandler):
-                  def do_GET(self):
-                      data = {
-                          'name': os.environ.get('NAME'),
-                          'serviceName': os.environ.get('SERVICENAME'),
-                          'ownerName': os.environ.get('OWNERNAME'),
-                          'ownerEmail': os.environ.get('OWNEREMAIL'),
-                          'runtime': os.environ.get('RUNTIME'),
-                          'tags': os.environ.get('TAGS').split(','),
-                          'description': os.environ.get('DESCRIPTION'),
-                          'actsOn': os.environ.get('ACTSON'),
-                          'repoURL': os.environ.get('REPOURL')
+              public class SimpleHttpServer {
+                  public static void main(String[] args) throws IOException {
+                      int port = 8086;
+                      HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+                      server.createContext("/", new MyHandler());
+                      server.setExecutor(null);
+                      System.out.println("Serving json-processor on port " + port);
+                      server.start();
+                  }
+
+                  static class MyHandler implements HttpHandler {
+                      @Override
+                      public void handle(HttpExchange t) throws IOException {
+                          // Add CORS headers
+                          t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+                          t.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                          t.getResponseHeaders().add("Access-Control-Allow-Headers", "*");
+                          t.getResponseHeaders().add("Access-Control-Max-Age", "3600");
+
+                          // Handle OPTIONS request for CORS preflight
+                          if (t.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                              t.sendResponseHeaders(204, -1);
+                              return;
+                          }
+
+                          String response = "{"
+                              + "\"name\":\"" + System.getenv("NAME") + "\","
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
+                              + "}";
+                          t.sendResponseHeaders(200, response.length());
+                          try (OutputStream os = t.getResponseBody()) {
+                              os.write(response.getBytes());
+                          }
                       }
-                      
-                      self.send_response(200)
-                      self.send_header('Content-type', 'application/json')
-                      self.end_headers()
-                      self.wfile.write(json.dumps(data, indent=2).encode())
+                  }
+              }
+              EOF
+              javac SimpleHttpServer.java
+              java SimpleHttpServer
 
-              with socketserver.TCPServer(("", 8086), RequestHandler) as httpd:
-                  print("Serving at port 8086")
-                  httpd.serve_forever()
-
-        # 8) xml-processor (runtime: java21)
+        # 8) xml-processor
         - name: xml-processor
           image: docker.io/library/openjdk:21-jdk-slim
           env:
@@ -462,15 +653,15 @@ spec:
               import java.io.IOException;
               import java.io.OutputStream;
               import java.net.InetSocketAddress;
-              import org.json.JSONObject;
-              import java.util.Arrays;
+              import java.util.HashMap;
+              import java.util.Map;
 
               public class SimpleHttpServer {
                   public static void main(String[] args) throws IOException {
                       int port = 8087;
                       HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
                       server.createContext("/", new MyHandler());
-                      server.setExecutor(null); 
+                      server.setExecutor(null);
                       System.out.println("Serving xml-processor on port " + port);
                       server.start();
                   }
@@ -478,22 +669,33 @@ spec:
                   static class MyHandler implements HttpHandler {
                       @Override
                       public void handle(HttpExchange t) throws IOException {
-                          JSONObject response = new JSONObject();
-                          response.put("name", System.getenv("NAME"));
-                          response.put("serviceName", System.getenv("SERVICENAME"));
-                          response.put("ownerName", System.getenv("OWNERNAME"));
-                          response.put("ownerEmail", System.getenv("OWNEREMAIL"));
-                          response.put("runtime", System.getenv("RUNTIME"));
-                          response.put("tags", Arrays.asList(System.getenv("TAGS").split(",")));
-                          response.put("description", System.getenv("DESCRIPTION"));
-                          response.put("actsOn", System.getenv("ACTSON"));
-                          response.put("repoURL", System.getenv("REPOURL"));
-                          
-                          String jsonResponse = response.toString(2);
-                          t.sendResponseHeaders(200, jsonResponse.length());
-                          OutputStream os = t.getResponseBody();
-                          os.write(jsonResponse.getBytes());
-                          os.close();
+                          // Add CORS headers
+                          t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+                          t.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                          t.getResponseHeaders().add("Access-Control-Allow-Headers", "*");
+                          t.getResponseHeaders().add("Access-Control-Max-Age", "3600");
+
+                          // Handle OPTIONS request for CORS preflight
+                          if (t.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                              t.sendResponseHeaders(204, -1);
+                              return;
+                          }
+
+                          String response = "{"
+                              + "\"name\":\"" + System.getenv("NAME") + "\","
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
+                              + "}";
+                          t.sendResponseHeaders(200, response.length());
+                          try (OutputStream os = t.getResponseBody()) {
+                              os.write(response.getBytes());
+                          }
                       }
                   }
               }
@@ -501,9 +703,9 @@ spec:
               javac SimpleHttpServer.java
               java SimpleHttpServer
 
-        # 9) excel-processor (runtime: python3.10)
+        # 9) excel-processor
         - name: excel-processor
-          image: docker.io/library/python:3.10-slim
+          image: docker.io/library/openjdk:21-jdk-slim
           env:
             - name: NAME
               value: "Excel Processor"
@@ -514,7 +716,7 @@ spec:
             - name: OWNEREMAIL
               value: "hank@example.com"
             - name: RUNTIME
-              value: "python3.10"
+              value: "java21"
             - name: TAGS
               value: "excel,xls,processing"
             - name: DESCRIPTION
@@ -525,41 +727,71 @@ spec:
               value: "https://github.com/hank/excel-processor"
           ports:
             - containerPort: 8088
-          command: ["python"]
+          command: ["/bin/bash"]
           args:
             - -c
             - |
-              import os
-              import http.server
-              import socketserver
-              import json
+              echo "Starting excel-processor on port 8088"
+              cat <<EOF > SimpleHttpServer.java
+              import com.sun.net.httpserver.HttpServer;
+              import com.sun.net.httpserver.HttpHandler;
+              import com.sun.net.httpserver.HttpExchange;
+              import java.io.IOException;
+              import java.io.OutputStream;
+              import java.net.InetSocketAddress;
+              import java.util.HashMap;
+              import java.util.Map;
 
-              class RequestHandler(http.server.SimpleHTTPRequestHandler):
-                  def do_GET(self):
-                      data = {
-                          'name': os.environ.get('NAME'),
-                          'serviceName': os.environ.get('SERVICENAME'),
-                          'ownerName': os.environ.get('OWNERNAME'),
-                          'ownerEmail': os.environ.get('OWNEREMAIL'),
-                          'runtime': os.environ.get('RUNTIME'),
-                          'tags': os.environ.get('TAGS').split(','),
-                          'description': os.environ.get('DESCRIPTION'),
-                          'actsOn': os.environ.get('ACTSON'),
-                          'repoURL': os.environ.get('REPOURL')
+              public class SimpleHttpServer {
+                  public static void main(String[] args) throws IOException {
+                      int port = 8088;
+                      HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+                      server.createContext("/", new MyHandler());
+                      server.setExecutor(null);
+                      System.out.println("Serving excel-processor on port " + port);
+                      server.start();
+                  }
+
+                  static class MyHandler implements HttpHandler {
+                      @Override
+                      public void handle(HttpExchange t) throws IOException {
+                          // Add CORS headers
+                          t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+                          t.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                          t.getResponseHeaders().add("Access-Control-Allow-Headers", "*");
+                          t.getResponseHeaders().add("Access-Control-Max-Age", "3600");
+
+                          // Handle OPTIONS request for CORS preflight
+                          if (t.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                              t.sendResponseHeaders(204, -1);
+                              return;
+                          }
+
+                          String response = "{"
+                              + "\"name\":\"" + System.getenv("NAME") + "\","
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
+                              + "}";
+                          t.sendResponseHeaders(200, response.length());
+                          try (OutputStream os = t.getResponseBody()) {
+                              os.write(response.getBytes());
+                          }
                       }
-                      
-                      self.send_response(200)
-                      self.send_header('Content-type', 'application/json')
-                      self.end_headers()
-                      self.wfile.write(json.dumps(data, indent=2).encode())
+                  }
+              }
+              EOF
+              javac SimpleHttpServer.java
+              java SimpleHttpServer
 
-              with socketserver.TCPServer(("", 8088), RequestHandler) as httpd:
-                  print("Serving at port 8088")
-                  httpd.serve_forever()
-
-        # 10) markdown-processor (runtime: python3.10)
+        # 10) markdown-processor
         - name: markdown-processor
-          image: docker.io/library/python:3.10-slim
+          image: docker.io/library/openjdk:21-jdk-slim
           env:
             - name: NAME
               value: "Markdown Processor"
@@ -570,7 +802,7 @@ spec:
             - name: OWNEREMAIL
               value: "ivy@example.com"
             - name: RUNTIME
-              value: "python3.10"
+              value: "java21"
             - name: TAGS
               value: "markdown,text,processing"
             - name: DESCRIPTION
@@ -581,34 +813,64 @@ spec:
               value: "https://github.com/ivy/markdown-processor"
           ports:
             - containerPort: 8089
-          command: ["python"]
+          command: ["/bin/bash"]
           args:
             - -c
             - |
-              import os
-              import http.server
-              import socketserver
-              import json
+              echo "Starting markdown-processor on port 8089"
+              cat <<EOF > SimpleHttpServer.java
+              import com.sun.net.httpserver.HttpServer;
+              import com.sun.net.httpserver.HttpHandler;
+              import com.sun.net.httpserver.HttpExchange;
+              import java.io.IOException;
+              import java.io.OutputStream;
+              import java.net.InetSocketAddress;
+              import java.util.HashMap;
+              import java.util.Map;
 
-              class RequestHandler(http.server.SimpleHTTPRequestHandler):
-                  def do_GET(self):
-                      data = {
-                          'name': os.environ.get('NAME'),
-                          'serviceName': os.environ.get('SERVICENAME'),
-                          'ownerName': os.environ.get('OWNERNAME'),
-                          'ownerEmail': os.environ.get('OWNEREMAIL'),
-                          'runtime': os.environ.get('RUNTIME'),
-                          'tags': os.environ.get('TAGS').split(','),
-                          'description': os.environ.get('DESCRIPTION'),
-                          'actsOn': os.environ.get('ACTSON'),
-                          'repoURL': os.environ.get('REPOURL')
+              public class SimpleHttpServer {
+                  public static void main(String[] args) throws IOException {
+                      int port = 8089;
+                      HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
+                      server.createContext("/", new MyHandler());
+                      server.setExecutor(null);
+                      System.out.println("Serving markdown-processor on port " + port);
+                      server.start();
+                  }
+
+                  static class MyHandler implements HttpHandler {
+                      @Override
+                      public void handle(HttpExchange t) throws IOException {
+                          // Add CORS headers
+                          t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+                          t.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                          t.getResponseHeaders().add("Access-Control-Allow-Headers", "*");
+                          t.getResponseHeaders().add("Access-Control-Max-Age", "3600");
+
+                          // Handle OPTIONS request for CORS preflight
+                          if (t.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                              t.sendResponseHeaders(204, -1);
+                              return;
+                          }
+
+                          String response = "{"
+                              + "\"name\":\"" + System.getenv("NAME") + "\","
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
+                              + "}";
+                          t.sendResponseHeaders(200, response.length());
+                          try (OutputStream os = t.getResponseBody()) {
+                              os.write(response.getBytes());
+                          }
                       }
-                      
-                      self.send_response(200)
-                      self.send_header('Content-type', 'application/json')
-                      self.end_headers()
-                      self.wfile.write(json.dumps(data, indent=2).encode())
-
-              with socketserver.TCPServer(("", 8089), RequestHandler) as httpd:
-                  print("Serving at port 8089")
-                  httpd.serve_forever()
+                  }
+              }
+              EOF
+              javac SimpleHttpServer.java
+              java SimpleHttpServer

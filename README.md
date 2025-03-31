@@ -78,6 +78,7 @@ npm start
 
 minikube start
 minikube kubectl -- apply -f kyube-crd.yml
-minikube kubectl -- apply -f resources/resource1.yml
+minikube kubectl -- apply -f multi-port-service.yml
 minikube kubectl -- apply -f my-processor-deployment.yaml
-minikube service my-processor-service --url
+minikube tunnel
+http://127.0.0.1:8080/
