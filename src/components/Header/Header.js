@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./Header.css";
 import searchIcon from "../../assets/search-icon.png";
-import { searchSolutions } from "../../services/api";
+import { fetchAllSolutions } from "../../services/api";
 
-const Header = ({ onSearchResults }) => {
+const Header = ({ onSearch }) => {
   const [userEmail, setUserEmail] = useState(
     sessionStorage.getItem("user_email") || null
   );
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -20,18 +20,38 @@ const Header = ({ onSearchResults }) => {
     return () => clearInterval(interval);
   }, [userEmail]);
 
-  const handleSearch = (e) => {
-    const value = e.target.value;
-    setSearchTerm(value);
+  const handleSearch = async (query) => {
+    setSearchQuery(query);
 
-    if (value.trim() === "") {
-      onSearchResults(null); // Clear results if search is empty
-      return;
+    if (query.length >= 3) {
+      try {
+        const solutions = await fetchAllSolutions();
+        const results = solutions.filter((solution) => {
+          // Extract owner name and service name from meta field
+          const [serviceName, ownerName] = solution.meta.split(" • ");
+
+          const searchFields = [
+            solution.title.toLowerCase(),
+            serviceName?.toLowerCase(),
+            ownerName?.toLowerCase(),
+            solution.tags?.toLowerCase(),
+          ];
+
+          return searchFields.some(
+            (field) => field && field.includes(query.toLowerCase())
+          );
+        });
+
+        const matchingIds = results.map((solution) => solution.id);
+        console.log("Matching solution IDs:", matchingIds);
+        onSearch(matchingIds);
+      } catch (error) {
+        console.error("Error searching solutions:", error);
+        onSearch([]);
+      }
+    } else {
+      onSearch(null);
     }
-
-    const results = searchSolutions(value);
-    console.log("Search Results:", results);
-    onSearchResults(results);
   };
 
   return (
@@ -44,8 +64,8 @@ const Header = ({ onSearchResults }) => {
         <input
           type="text"
           placeholder="Search"
-          value={searchTerm}
-          onChange={handleSearch}
+          value={searchQuery}
+          onChange={(e) => handleSearch(e.target.value)}
         />
       </div>
 

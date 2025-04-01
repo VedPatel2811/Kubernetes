@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { fetchAllSolutions } from "../../services/api";
 import "./Content.css";
 
-const Solutionlist = ({ selectedSolutionIds, searchResults }) => {
+const Solutionlist = ({ selectedSolutionIds }) => {
   const navigate = useNavigate();
   const [solutions, setSolutions] = useState([]);
   const [filteredSolutions, setFilteredSolutions] = useState([]);
@@ -24,20 +24,20 @@ const Solutionlist = ({ selectedSolutionIds, searchResults }) => {
   }, []);
 
   useEffect(() => {
-    if (searchResults !== null) {
-      // If there are search results, show them
-      setFilteredSolutions(searchResults);
-    } else if (selectedSolutionIds === null) {
-      // If no tag is selected and no search results, show all solutions
+    if (selectedSolutionIds === null) {
+      // Show all solutions when no search is active
       setFilteredSolutions(solutions);
+    } else if (selectedSolutionIds.length === 0) {
+      // Show no solutions when search returns no results
+      setFilteredSolutions([]);
     } else {
-      // Filter solutions based on selected tag
+      // Filter solutions based on search results
       const filtered = solutions.filter((solution) =>
         selectedSolutionIds.includes(solution.id)
       );
       setFilteredSolutions(filtered);
     }
-  }, [selectedSolutionIds, solutions, searchResults]);
+  }, [selectedSolutionIds, solutions]);
 
   function onClick(solution) {
     navigate(`/solution/${solution.id}`, { state: { port: solution.port } });
@@ -45,16 +45,24 @@ const Solutionlist = ({ selectedSolutionIds, searchResults }) => {
 
   return (
     <div className="content">
-      {filteredSolutions.map((solution) => (
-        <div
-          key={solution.id}
-          onClick={() => onClick(solution)}
-          className="solution-card"
-        >
-          <h3>{solution.title}</h3>
-          <p>{solution.meta}</p>
+      {filteredSolutions.length === 0 ? (
+        <div className="no-results">
+          {selectedSolutionIds === null
+            ? "Loading solutions..."
+            : "No solutions found matching your search."}
         </div>
-      ))}
+      ) : (
+        filteredSolutions.map((solution) => (
+          <div
+            key={solution.id}
+            onClick={() => onClick(solution)}
+            className="solution-card"
+          >
+            <h3>{solution.title}</h3>
+            <p>{solution.meta}</p>
+          </div>
+        ))
+      )}
     </div>
   );
 };

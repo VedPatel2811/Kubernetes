@@ -6,25 +6,21 @@ import "./HomePage.css";
 
 const HomePage = () => {
   const [selectedSolutionIds, setSelectedSolutionIds] = useState(null);
-  const [searchResults, setSearchResults] = useState(null);
 
   const handleTagSelect = (solutionIds) => {
     setSelectedSolutionIds(solutionIds);
   };
 
-  const handleSearchResults = (results) => {
-    setSearchResults(results);
+  const handleSearch = (solutionIds) => {
+    setSelectedSolutionIds(solutionIds);
   };
 
   return (
     <div className="home-container">
-      <Header onSearchResults={handleSearchResults} />
+      <Header onSearch={handleSearch} />
       <div className="home-content">
         <Menubar onTagSelect={handleTagSelect} />
-        <Solutionlist
-          selectedSolutionIds={selectedSolutionIds}
-          searchResults={searchResults}
-        />
+        <Solutionlist selectedSolutionIds={selectedSolutionIds} />
       </div>
     </div>
   );
