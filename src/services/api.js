@@ -1,10 +1,11 @@
-// API service for handling all backend calls
-const BASE_URL = "http://127.0.0.1";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 // Store unique tags with their associated IDs
 let uniqueTags = new Map();
 
-// Helper function to update unique tags
+// Store all solution details with their IDs for search functionality
+let solutionDetails = new Map();
+
 const updateUniqueTags = (tags, id) => {
   if (!tags) return;
   const tagArray = tags.split(",").map((tag) => tag.trim());
@@ -18,7 +19,6 @@ const updateUniqueTags = (tags, id) => {
   });
 };
 
-// Function to get all unique tags with their associated IDs
 export const getUniqueTags = () => {
   return Array.from(uniqueTags.entries()).map(([tag, ids]) => ({
     tag,
@@ -28,10 +28,9 @@ export const getUniqueTags = () => {
 
 export const fetchAllSolutions = async () => {
   const allSolutions = [];
-  // Clear existing tags before fetching new data
   uniqueTags.clear();
+  solutionDetails.clear();
 
-  // Fetch data from all ports (8080-8089)
   for (let port = 8080; port <= 8089; port++) {
     try {
       const response = await fetch(`${BASE_URL}:${port}/`);
@@ -45,11 +44,18 @@ export const fetchAllSolutions = async () => {
     }
   }
 
-  // Transform the API data to match our solution format
   const transformedData = allSolutions.map((item, index) => {
     const id = index + 1;
-    // Update unique tags with the new solution's ID
     updateUniqueTags(item.tags, id);
+
+    // Store solution details in the Map
+    solutionDetails.set(id, {
+      name: item.name,
+      serviceName: item.serviceName,
+      ownerName: item.ownerName,
+      tags: item.tags,
+      port: item.port,
+    });
 
     return {
       id,
@@ -65,6 +71,18 @@ export const fetchAllSolutions = async () => {
     };
   });
 
+  // Print all stored solution details
+  console.log("Stored Solution Details:");
+  solutionDetails.forEach((details, id) => {
+    console.log(`ID: ${id}`);
+    console.log(`Name: ${details.name}`);
+    console.log(`Service Name: ${details.serviceName}`);
+    console.log(`Owner Name: ${details.ownerName}`);
+    console.log(`Tags: ${details.tags}`);
+    console.log(`Port: ${details.port}`);
+    console.log("-------------------");
+  });
+
   return transformedData;
 };
 
@@ -76,8 +94,16 @@ export const fetchSolutionById = async (id, port) => {
     }
     const data = await response.json();
 
-    // Update unique tags with the solution's ID without clearing existing tags
     updateUniqueTags(data.tags, parseInt(id));
+
+    // Update solution details in the Map
+    solutionDetails.set(parseInt(id), {
+      name: data.name,
+      serviceName: data.serviceName,
+      ownerName: data.ownerName,
+      tags: data.tags,
+      port: port,
+    });
 
     return {
       id: parseInt(id),
@@ -97,7 +123,33 @@ export const fetchSolutionById = async (id, port) => {
   }
 };
 
-// Function to get solutions by tag
 export const getSolutionsByTag = (tag) => {
   return uniqueTags.get(tag) || [];
+};
+
+// New function to get solution details by ID
+export const getSolutionDetailsById = (id) => {
+  return solutionDetails.get(parseInt(id)) || null;
+};
+
+// New function to search solutions by name, serviceName, ownerName, or tags
+export const searchSolutions = (searchTerm) => {
+  const results = [];
+  searchTerm = searchTerm.toLowerCase();
+
+  solutionDetails.forEach((details, id) => {
+    if (
+      details.name.toLowerCase().includes(searchTerm) ||
+      details.serviceName.toLowerCase().includes(searchTerm) ||
+      details.ownerName.toLowerCase().includes(searchTerm) ||
+      details.tags.toLowerCase().includes(searchTerm)
+    ) {
+      results.push({
+        id,
+        ...details,
+      });
+    }
+  });
+
+  return results;
 };

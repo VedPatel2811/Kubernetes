@@ -8,9 +8,7 @@ const Menubar = ({ onTagSelect }) => {
 
   useEffect(() => {
     const loadData = async () => {
-      // First fetch all solutions to populate the tags
       await fetchAllSolutions();
-      // Then get the unique tags
       const uniqueTags = getUniqueTags();
       setTags(uniqueTags);
     };
@@ -20,7 +18,6 @@ const Menubar = ({ onTagSelect }) => {
 
   const handleTagClick = (tag) => {
     if (selectedTag === tag.tag) {
-      // If clicking the same tag, deselect it
       setSelectedTag(null);
       onTagSelect(null);
     } else {

@@ -14,18 +14,14 @@ function App() {
   );
 
   useEffect(() => {
-    // Check if user is authenticated
     if (!isLoading && !isAuthenticated) {
-      // If not authenticated, trigger login popup
       loginWithRedirect();
     }
   }, [isLoading, isAuthenticated, loginWithRedirect]);
 
   useEffect(() => {
-    // Store user email in sessionStorage when authenticated
     if (isAuthenticated && user?.email) {
       sessionStorage.setItem("user_email", user.email);
-      console.log("✅ User email stored:", user.email);
     }
   }, [isAuthenticated, user]);
 

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { fetchAllSolutions } from "../../services/api";
 import "./Content.css";
 
-const Solutionlist = ({ selectedSolutionIds }) => {
+const Solutionlist = ({ selectedSolutionIds, searchResults }) => {
   const navigate = useNavigate();
   const [solutions, setSolutions] = useState([]);
   const [filteredSolutions, setFilteredSolutions] = useState([]);
@@ -24,8 +24,11 @@ const Solutionlist = ({ selectedSolutionIds }) => {
   }, []);
 
   useEffect(() => {
-    if (selectedSolutionIds === null) {
-      // If no tag is selected, show all solutions
+    if (searchResults !== null) {
+      // If there are search results, show them
+      setFilteredSolutions(searchResults);
+    } else if (selectedSolutionIds === null) {
+      // If no tag is selected and no search results, show all solutions
       setFilteredSolutions(solutions);
     } else {
       // Filter solutions based on selected tag
@@ -34,7 +37,7 @@ const Solutionlist = ({ selectedSolutionIds }) => {
       );
       setFilteredSolutions(filtered);
     }
-  }, [selectedSolutionIds, solutions]);
+  }, [selectedSolutionIds, solutions, searchResults]);
 
   function onClick(solution) {
     navigate(`/solution/${solution.id}`, { state: { port: solution.port } });
