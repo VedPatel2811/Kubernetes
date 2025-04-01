@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-processor-service
+spec:
+  selector:
+    app: my-processor
+  type: LoadBalancer
+  ports:
+    - name: text-processor
+      port: 8080
+      targetPort: 8080
+    - name: image-processor
+      port: 8081
+      targetPort: 8081
+    - name: video-processor
+      port: 8082
+      targetPort: 8082
+    - name: audio-processor
+      port: 8083
+      targetPort: 8083
+    - name: pdf-processor
+      port: 8084
+      targetPort: 8084
+    - name: csv-processor
+      port: 8085
+      targetPort: 8085
+    - name: json-processor
+      port: 8086
+      targetPort: 8086
+    - name: xml-processor
+      port: 8087
+      targetPort: 8087
+    - name: excel-processor
+      port: 8088
+      targetPort: 8088
+    - name: markdown-processor
+      port: 8089
+      targetPort: 8089

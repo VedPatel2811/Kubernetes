@@ -7,6 +7,10 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.7.9",
+    "babel-preset-react-app": "^10.0.1",
+    "fs": "^0.0.1-security",
+    "https": "^1.0.0",
     "bootstrap": "^3.4.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -39,6 +43,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   },
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "index.js",

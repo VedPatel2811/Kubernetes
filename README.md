@@ -72,7 +72,13 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 npm i dotenv
 npm install dotenv-webpack
 
-
 ### Open new Terminal
 
 npm start
+
+minikube start
+minikube kubectl -- apply -f kyube-crd.yml
+minikube kubectl -- apply -f multi-port-service.yml
+minikube kubectl -- apply -f my-processor-deployment.yaml
+minikube tunnel
+http://127.0.0.1:8080/
