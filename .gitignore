@@ -23,6 +23,4 @@ yarn-debug.log*
 yarn-error.log*
 .vs/
 .env
-package-lock.json
-package.json
 node_modules
