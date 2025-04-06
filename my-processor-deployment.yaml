@@ -18,6 +18,13 @@ spec:
         # 1) text-processor
         - name: text-processor
           image: docker.io/library/openjdk:21-jdk-slim
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             - name: NAME
               value: "Text Processor"
@@ -80,14 +87,14 @@ spec:
                           }
 
                           String response = "{"
-                              + "\"name\":\"" + System.getenv("NAME") + "\","
-                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
-                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
-                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
-                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
-                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
-                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
-                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"name\":\"" + System.getenv("NAME") + "\"," 
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\"," 
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\"," 
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\"," 
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\"," 
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\"," 
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\"," 
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\"," 
                               + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
                               + "}";
                           t.sendResponseHeaders(200, response.length());
@@ -104,6 +111,13 @@ spec:
         # 2) image-processor
         - name: image-processor
           image: docker.io/library/openjdk:21-jdk-slim
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             - name: NAME
               value: "Image Processor"
@@ -166,14 +180,14 @@ spec:
                           }
 
                           String response = "{"
-                              + "\"name\":\"" + System.getenv("NAME") + "\","
-                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
-                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
-                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
-                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
-                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
-                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
-                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"name\":\"" + System.getenv("NAME") + "\"," 
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\"," 
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\"," 
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\"," 
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\"," 
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\"," 
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\"," 
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\"," 
                               + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
                               + "}";
                           t.sendResponseHeaders(200, response.length());
@@ -190,6 +204,13 @@ spec:
         # 3) video-processor
         - name: video-processor
           image: docker.io/library/openjdk:21-jdk-slim
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             - name: NAME
               value: "Video Processor"
@@ -252,14 +273,14 @@ spec:
                           }
 
                           String response = "{"
-                              + "\"name\":\"" + System.getenv("NAME") + "\","
-                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
-                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
-                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
-                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
-                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
-                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
-                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"name\":\"" + System.getenv("NAME") + "\"," 
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\"," 
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\"," 
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\"," 
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\"," 
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\"," 
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\"," 
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\"," 
                               + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
                               + "}";
                           t.sendResponseHeaders(200, response.length());
@@ -276,6 +297,13 @@ spec:
         # 4) audio-processor
         - name: audio-processor
           image: docker.io/library/openjdk:21-jdk-slim
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             - name: NAME
               value: "Audio Processor"
@@ -338,14 +366,14 @@ spec:
                           }
 
                           String response = "{"
-                              + "\"name\":\"" + System.getenv("NAME") + "\","
-                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
-                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
-                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
-                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
-                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
-                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
-                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"name\":\"" + System.getenv("NAME") + "\"," 
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\"," 
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\"," 
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\"," 
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\"," 
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\"," 
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\"," 
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\"," 
                               + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
                               + "}";
                           t.sendResponseHeaders(200, response.length());
@@ -362,6 +390,13 @@ spec:
         # 5) pdf-processor
         - name: pdf-processor
           image: docker.io/library/openjdk:21-jdk-slim
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             - name: NAME
               value: "PDF Processor"
@@ -424,14 +459,14 @@ spec:
                           }
 
                           String response = "{"
-                              + "\"name\":\"" + System.getenv("NAME") + "\","
-                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
-                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
-                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
-                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
-                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
-                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
-                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"name\":\"" + System.getenv("NAME") + "\"," 
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\"," 
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\"," 
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\"," 
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\"," 
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\"," 
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\"," 
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\"," 
                               + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
                               + "}";
                           t.sendResponseHeaders(200, response.length());
@@ -448,6 +483,13 @@ spec:
         # 6) csv-processor
         - name: csv-processor
           image: docker.io/library/openjdk:21-jdk-slim
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             - name: NAME
               value: "CSV Processor"
@@ -510,14 +552,14 @@ spec:
                           }
 
                           String response = "{"
-                              + "\"name\":\"" + System.getenv("NAME") + "\","
-                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
-                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
-                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
-                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
-                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
-                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
-                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"name\":\"" + System.getenv("NAME") + "\"," 
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\"," 
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\"," 
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\"," 
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\"," 
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\"," 
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\"," 
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\"," 
                               + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
                               + "}";
                           t.sendResponseHeaders(200, response.length());
@@ -534,6 +576,13 @@ spec:
         # 7) json-processor
         - name: json-processor
           image: docker.io/library/openjdk:21-jdk-slim
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             - name: NAME
               value: "JSON Processor"
@@ -596,14 +645,14 @@ spec:
                           }
 
                           String response = "{"
-                              + "\"name\":\"" + System.getenv("NAME") + "\","
-                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
-                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
-                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
-                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
-                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
-                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
-                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"name\":\"" + System.getenv("NAME") + "\"," 
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\"," 
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\"," 
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\"," 
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\"," 
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\"," 
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\"," 
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\"," 
                               + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
                               + "}";
                           t.sendResponseHeaders(200, response.length());
@@ -620,6 +669,13 @@ spec:
         # 8) xml-processor
         - name: xml-processor
           image: docker.io/library/openjdk:21-jdk-slim
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             - name: NAME
               value: "XML Processor"
@@ -682,14 +738,14 @@ spec:
                           }
 
                           String response = "{"
-                              + "\"name\":\"" + System.getenv("NAME") + "\","
-                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
-                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
-                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
-                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
-                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
-                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
-                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"name\":\"" + System.getenv("NAME") + "\"," 
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\"," 
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\"," 
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\"," 
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\"," 
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\"," 
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\"," 
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\"," 
                               + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
                               + "}";
                           t.sendResponseHeaders(200, response.length());
@@ -706,6 +762,13 @@ spec:
         # 9) excel-processor
         - name: excel-processor
           image: docker.io/library/openjdk:21-jdk-slim
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             - name: NAME
               value: "Excel Processor"
@@ -768,14 +831,14 @@ spec:
                           }
 
                           String response = "{"
-                              + "\"name\":\"" + System.getenv("NAME") + "\","
-                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
-                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
-                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
-                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
-                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
-                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
-                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"name\":\"" + System.getenv("NAME") + "\"," 
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\"," 
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\"," 
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\"," 
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\"," 
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\"," 
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\"," 
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\"," 
                               + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
                               + "}";
                           t.sendResponseHeaders(200, response.length());
@@ -792,6 +855,13 @@ spec:
         # 10) markdown-processor
         - name: markdown-processor
           image: docker.io/library/openjdk:21-jdk-slim
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
           env:
             - name: NAME
               value: "Markdown Processor"
@@ -854,14 +924,14 @@ spec:
                           }
 
                           String response = "{"
-                              + "\"name\":\"" + System.getenv("NAME") + "\","
-                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\","
-                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\","
-                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\","
-                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\","
-                              + "\"tags\":\"" + System.getenv("TAGS") + "\","
-                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\","
-                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\","
+                              + "\"name\":\"" + System.getenv("NAME") + "\"," 
+                              + "\"serviceName\":\"" + System.getenv("SERVICENAME") + "\"," 
+                              + "\"ownerName\":\"" + System.getenv("OWNERNAME") + "\"," 
+                              + "\"ownerEmail\":\"" + System.getenv("OWNEREMAIL") + "\"," 
+                              + "\"runtime\":\"" + System.getenv("RUNTIME") + "\"," 
+                              + "\"tags\":\"" + System.getenv("TAGS") + "\"," 
+                              + "\"description\":\"" + System.getenv("DESCRIPTION") + "\"," 
+                              + "\"actsOn\":\"" + System.getenv("ACTSON") + "\"," 
                               + "\"repoURL\":\"" + System.getenv("REPOURL") + "\""
                               + "}";
                           t.sendResponseHeaders(200, response.length());
