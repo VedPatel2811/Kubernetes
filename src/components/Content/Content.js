@@ -2,21 +2,26 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchAllSolutions } from "../../services/api";
+import LoadingPage from "../Loading/LoadingPage";
 import "./Content.css";
 
 const Solutionlist = ({ selectedSolutionIds }) => {
   const navigate = useNavigate();
   const [solutions, setSolutions] = useState([]);
   const [filteredSolutions, setFilteredSolutions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadSolutions = async () => {
       try {
+        setIsLoading(true);
         const data = await fetchAllSolutions();
         setSolutions(data);
         setFilteredSolutions(data);
       } catch (error) {
         console.error("Error fetching solutions:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -43,12 +48,16 @@ const Solutionlist = ({ selectedSolutionIds }) => {
     navigate(`/solution/${solution.id}`, { state: { port: solution.port } });
   }
 
+  if (isLoading) {
+    return <LoadingPage />;
+  }
+
   return (
     <div className="content">
       {filteredSolutions.length === 0 ? (
         <div className="no-results">
           {selectedSolutionIds === null
-            ? "Loading solutions..."
+            ? "No solutions available."
             : "No solutions found matching your search."}
         </div>
       ) : (

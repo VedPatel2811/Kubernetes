@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Header.css";
 import searchIcon from "../../assets/search-icon.png";
 import { fetchAllSolutions } from "../../services/api";
 
-const Header = ({ onSearch }) => {
+const Header = ({ onSearch, hideSearch = false }) => {
+  const navigate = useNavigate();
   const [userEmail, setUserEmail] = useState(
     sessionStorage.getItem("user_email") || null
   );
@@ -54,26 +56,36 @@ const Header = ({ onSearch }) => {
     }
   };
 
+  const handleTitleClick = () => {
+    navigate("/");
+  };
+
   return (
     <header className="header">
-      <h1>CSE Marketplace</h1>
-      <div className="header-search">
-        <button className="search-icon-button">
-          <img src={searchIcon} alt="search" className="search-icon" />
-        </button>
-        <input
-          type="text"
-          placeholder="Search"
-          value={searchQuery}
-          onChange={(e) => handleSearch(e.target.value)}
-        />
-      </div>
+      <h1 onClick={handleTitleClick} style={{ cursor: "pointer" }}>
+        CSE Marketplace
+      </h1>
+      {!hideSearch && (
+        <div className="header-search">
+          <button className="search-icon-button">
+            <img src={searchIcon} alt="search" className="search-icon" />
+          </button>
+          <input
+            type="text"
+            placeholder="Search"
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+          />
+        </div>
+      )}
 
       <div className="header-buttons">
-        <button>Processes</button>
-        <div className="user-info">
-          {userEmail ? userEmail.substring(0, userEmail.indexOf("@")) : "Guest"}
-        </div>
+        <button>
+          {" "}
+          {userEmail
+            ? userEmail.substring(0, userEmail.indexOf("@"))
+            : "Guest"}{" "}
+        </button>
       </div>
     </header>
   );

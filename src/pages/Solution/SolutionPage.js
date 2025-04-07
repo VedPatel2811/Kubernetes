@@ -6,7 +6,7 @@ import "./SolutionPage.css";
 const SolutionPage = () => {
   return (
     <div className="solution-page">
-      <Header />
+      <Header hideSearch={true} />
       <Description />
     </div>
   );
