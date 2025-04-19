@@ -5,6 +5,7 @@ import WelcomePage from "./components/Welcome/WelcomePage";
 import HomePage from "./pages/Home/HomePage";
 import SolutionPage from "./pages/Solution/SolutionPage";
 import LoadingPage from "./components/Loading/LoadingPage";
+import Footer from "./components/Footer/Footer";
 import "./App.css";
 
 function App() {
@@ -40,13 +41,18 @@ function App() {
         {showWelcome ? (
           <WelcomePage onClose={handleWelcomeClose} />
         ) : (
-          <Routes>
-            {/* Home page route */}
-            <Route path="/" element={<HomePage />} />
+          <>
+            <main className="main-content">
+              <Routes>
+                {/* Home page route */}
+                <Route path="/" element={<HomePage />} />
 
-            {/* Solution page route */}
-            <Route path="/solution/:id" element={<SolutionPage />} />
-          </Routes>
+                {/* Solution page route */}
+                <Route path="/solution/:id" element={<SolutionPage />} />
+              </Routes>
+            </main>
+            <Footer />
+          </>
         )}
       </div>
     </Router>
